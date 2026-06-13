@@ -194,6 +194,16 @@
     min-height: 200px;
   }
 
+  /* Плавное появление готового промпта */
+  @keyframes promptAppear {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  #output.appear {
+    animation: promptAppear 0.45s ease;
+  }
+
   /* Мягкое уведомление (тост) */
   #toast {
     position: fixed;
@@ -394,6 +404,11 @@
     output.value = prompt;
     autoGrow(output);
     saveAll();
+
+    // Перезапуск анимации появления
+    output.classList.remove("appear");
+    void output.offsetWidth; // заставляем браузер «заметить» сброс
+    output.classList.add("appear");
   }
 
   // --- Усилить: дописывает инструкцию сверху (без повторов) ---
@@ -473,6 +488,9 @@
 
   FIELDS.forEach(id => {
     const el = document.getElementById(id);
+
+    // Проверка орфографии (подчёркивает ошибки)
+    el.spellcheck = true;
 
     // Запоминаем состояние ДО начала редактирования
     el.addEventListener("focus", () => { editStartState = snapshot(); });
