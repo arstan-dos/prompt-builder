@@ -156,7 +156,7 @@
 </div>
 
 <div class="field">
-  <label for="limits" title="Какие ограничения?">Ограничения</label>
+  <label for="limits" title="Какие условия и рамки?">Условия и рамки</label>
   <div class="tooltip">Пример: бюджет, сроки, технологии...</div>
   <textarea id="limits"></textarea>
 </div>
@@ -208,7 +208,7 @@
     const prompt =
       "Контекст:\n" + context +
       "\n\nЗадача:\n" + task +
-      "\n\nОграничения:\n" + limits +
+      "\n\nУсловия и рамки:\n" + limits +
       "\n\nФормат ответа:\n" + format;
 
     document.getElementById("output").value = prompt;
