@@ -1,127 +1,262 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Prompt Builder</title>
 
 <style>
-body {
-  font-family: Arial;
-  max-width: 800px;
-  margin: auto;
-  padding: 20px;
-}
+  :root {
+    --bg: #f4f6fb;
+    --card: #ffffff;
+    --text: #1f2430;
+    --muted: #6b7280;
+    --border: #e2e6ee;
+    --accent: #4f46e5;
+    --accent-hover: #4338ca;
+  }
 
-textarea {
-  width: 100%;
-  margin: 10px 0;
-  padding: 10px;
-}
+  * { box-sizing: border-box; }
 
-button {
-  padding: 10px;
-  margin: 5px 5px 5px 0;
-  cursor: pointer;
-}
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+    line-height: 1.5;
+  }
 
-label {
-  font-weight: bold;
-  cursor: help;
-}
+  h2 {
+    margin: 0 0 4px;
+    font-size: 26px;
+  }
 
-.tooltip {
-  color: #555;
-  font-size: 12px;
-  margin-bottom: 10px;
-}
+  .subtitle {
+    color: var(--muted);
+    margin: 0 0 24px;
+    font-size: 14px;
+  }
+
+  .field {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .tooltip {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 56px;
+  }
+
+  textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  }
+
+  .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 24px;
+  }
+
+  button {
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--text);
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  button:hover {
+    border-color: var(--accent);
+  }
+
+  button.primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  button.primary:hover {
+    background: var(--accent-hover);
+  }
+
+  #output {
+    background: var(--card);
+    min-height: 200px;
+  }
 </style>
 
 </head>
 <body>
 
 <h2>🚀 AI Prompt Builder</h2>
+<p class="subtitle">Помощник для сборки понятных промптов к нейросетям</p>
 
-<label title="Что происходит? Опиши проект. Пример: Разрабатываю центр реабилитации">Контекст</label>
-<div class="tooltip">Пример: Разрабатываю новый проект...</div>
-<textarea id="context"></textarea>
+<div class="field">
+  <label for="context" title="Что происходит? Опиши проект.">Контекст</label>
+  <div class="tooltip">Пример: Разрабатываю центр реабилитации...</div>
+  <textarea id="context"></textarea>
+</div>
 
-<label title="Что нужно получить? Пример: Усилить концепцию">Задача</label>
-<div class="tooltip">Пример: Сделать лучше, усилить...</div>
-<textarea id="task"></textarea>
+<div class="field">
+  <label for="task" title="Что нужно получить?">Задача</label>
+  <div class="tooltip">Пример: Сделать лучше, усилить концепцию...</div>
+  <textarea id="task"></textarea>
+</div>
 
-<label title="Какие ограничения? Пример: бюджет, сроки">Ограничения</label>
-<div class="tooltip">Пример: Ограниченный бюджет...</div>
-<textarea id="limits"></textarea>
+<div class="field">
+  <label for="limits" title="Какие ограничения?">Ограничения</label>
+  <div class="tooltip">Пример: бюджет, сроки, технологии...</div>
+  <textarea id="limits"></textarea>
+</div>
 
-<label title="Как должен выглядеть ответ?">Формат ответа</label>
-<div class="tooltip">Пример: список + структура</div>
-<textarea id="format"></textarea>
+<div class="field">
+  <label for="format" title="Как должен выглядеть ответ?">Формат ответа</label>
+  <div class="tooltip">Пример: список + структура</div>
+  <textarea id="format"></textarea>
+</div>
 
-<button onclick="generatePrompt()">🚀 Собрать</button>
-<button onclick="enhancePrompt()">🧠 Усилить</button>
-<button onclick="translatePrompt()">🌍 English</button>
-<button onclick="copyText()">📋 Копировать</button>
+<div class="buttons">
+  <button class="primary" onclick="generatePrompt()">🚀 Собрать</button>
+  <button onclick="enhancePrompt()">🧠 Усилить</button>
+  <button onclick="translatePrompt()">🌍 English</button>
+  <button onclick="copyText()">📋 Копировать</button>
+  <button onclick="clearAll()">🧹 Очистить</button>
+</div>
 
 <h3>Готовый промпт (можно редактировать):</h3>
 <textarea id="output" rows="10"></textarea>
 
 <script>
+  // Поля, которые мы запоминаем между запусками
+  const FIELDS = ["context", "task", "limits", "format", "output"];
 
-function generatePrompt() {
-  var context = document.getElementById("context").value;
-  var task = document.getElementById("task").value;
-  var limits = document.getElementById("limits").value;
-  var format = document.getElementById("format").value;
+  // Тексты-инструкции для кнопок (вынесены, чтобы не дублировать)
+  const ENHANCE_NOTE = "Проанализируй и улучши запрос. Добавь:\n- глубину\n- варианты решений\n- риски\n\n";
+  const TRANSLATE_NOTE = "Translate into professional English:\n\n";
 
-  var prompt = "Контекст:\n" + context +
-               "\n\nЗадача:\n" + task +
-               "\n\nОграничения:\n" + limits +
-               "\n\nФормат ответа:\n" + format;
+  // --- Сборка промпта ---
+  function generatePrompt() {
+    const context = document.getElementById("context").value;
+    const task = document.getElementById("task").value;
+    const limits = document.getElementById("limits").value;
+    const format = document.getElementById("format").value;
 
-  document.getElementById("output").value = prompt;
-}
+    const prompt =
+      "Контекст:\n" + context +
+      "\n\nЗадача:\n" + task +
+      "\n\nОграничения:\n" + limits +
+      "\n\nФормат ответа:\n" + format;
 
-function enhancePrompt() {
-  var text = document.getElementById("output").value;
-
-  if (!text) {
-    alert("Сначала собери промпт");
-    return;
+    document.getElementById("output").value = prompt;
+    saveAll();
   }
 
-  var result = "Проанализируй и улучши запрос. Добавь:\n- глубину\n- варианты решений\n- риски\n\n" + text;
-
-  document.getElementById("output").value = result;
-}
-
-function translatePrompt() {
-  var text = document.getElementById("output").value;
-
-  if (!text) {
-    alert("Сначала собери промпт");
-    return;
+  // --- Усилить: дописывает инструкцию сверху (без повторов) ---
+  function enhancePrompt() {
+    const output = document.getElementById("output");
+    if (!output.value.trim()) {
+      alert("Сначала собери промпт");
+      return;
+    }
+    if (output.value.startsWith(ENHANCE_NOTE)) {
+      alert("Инструкция «Усилить» уже добавлена");
+      return;
+    }
+    output.value = ENHANCE_NOTE + output.value;
+    saveAll();
   }
 
-  var result = "Translate into professional English:\n\n" + text;
-
-  document.getElementById("output").value = result;
-}
-
-function copyText() {
-  var text = document.getElementById("output").value;
-
-  if (!text) {
-    alert("Пусто");
-    return;
+  // --- English: добавляет просьбу о переводе (без повторов) ---
+  function translatePrompt() {
+    const output = document.getElementById("output");
+    if (!output.value.trim()) {
+      alert("Сначала собери промпт");
+      return;
+    }
+    if (output.value.startsWith(TRANSLATE_NOTE)) {
+      alert("Инструкция перевода уже добавлена");
+      return;
+    }
+    output.value = TRANSLATE_NOTE + output.value;
+    saveAll();
   }
 
-  navigator.clipboard.writeText(text);
-  alert("Скопировано ✅");
-}
+  // --- Копирование с честной проверкой результата ---
+  async function copyText() {
+    const text = document.getElementById("output").value;
+    if (!text.trim()) {
+      alert("Пусто — нечего копировать");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      alert("Скопировано ✅");
+    } catch (e) {
+      // Резервный способ (на случай, если основной заблокирован браузером)
+      const output = document.getElementById("output");
+      output.select();
+      const ok = document.execCommand("copy");
+      window.getSelection().removeAllRanges();
+      alert(ok ? "Скопировано ✅" : "Не удалось скопировать — выдели текст и нажми Ctrl+C");
+    }
+  }
 
+  // --- Очистить все поля ---
+  function clearAll() {
+    if (!confirm("Очистить все поля?")) return;
+    FIELDS.forEach(id => document.getElementById(id).value = "");
+    saveAll();
+  }
+
+  // --- Память между запусками (localStorage) ---
+  function saveAll() {
+    FIELDS.forEach(id => {
+      localStorage.setItem("pb_" + id, document.getElementById(id).value);
+    });
+  }
+
+  function loadAll() {
+    FIELDS.forEach(id => {
+      const saved = localStorage.getItem("pb_" + id);
+      if (saved !== null) document.getElementById(id).value = saved;
+    });
+  }
+
+  // Загружаем сохранённое при открытии и сохраняем при каждом изменении
+  loadAll();
+  FIELDS.forEach(id => {
+    document.getElementById(id).addEventListener("input", saveAll);
+  });
 </script>
 
 </body>
 </html>
-``
