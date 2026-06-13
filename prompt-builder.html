@@ -14,6 +14,8 @@
     --border: #e2e6ee;
     --accent: #4f46e5;
     --accent-hover: #4338ca;
+    --danger: #dc2626;
+    --shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 4px 12px rgba(16, 24, 40, 0.06);
   }
 
   * { box-sizing: border-box; }
@@ -45,6 +47,7 @@
     border-radius: 12px;
     padding: 14px 16px;
     margin-bottom: 14px;
+    box-shadow: var(--shadow);
   }
 
   label {
@@ -76,11 +79,44 @@
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
   }
 
-  .buttons {
+  /* Главное действие + очистка */
+  .actions-main {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 28px;
+  }
+
+  .spacer { flex: 1; }
+
+  /* Карточка результата */
+  .result-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .result-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .result-header h3 {
+    margin: 0;
+    margin-right: auto;
+    font-size: 16px;
+  }
+
+  .result-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin: 8px 0 24px;
   }
 
   button {
@@ -91,11 +127,22 @@
     color: var(--text);
     font-size: 14px;
     cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
+    transition: background 0.15s, border-color 0.15s, transform 0.05s;
   }
 
   button:hover {
     border-color: var(--accent);
+  }
+
+  /* Отклик при нажатии — лёгкое «вдавливание» */
+  button:active {
+    transform: translateY(1px);
+  }
+
+  /* Видимая рамка при навигации с клавиатуры */
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 
   button.primary {
@@ -106,6 +153,26 @@
 
   button.primary:hover {
     background: var(--accent-hover);
+  }
+
+  /* Крупная главная кнопка «Собрать» */
+  button.big {
+    padding: 13px 26px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  /* «Тихая» опасная кнопка «Очистить» */
+  button.ghost-danger {
+    background: transparent;
+    border-color: transparent;
+    color: var(--muted);
+  }
+
+  button.ghost-danger:hover {
+    background: rgba(220, 38, 38, 0.08);
+    border-color: transparent;
+    color: var(--danger);
   }
 
   #output {
@@ -167,16 +234,23 @@
   <textarea id="format"></textarea>
 </div>
 
-<div class="buttons">
-  <button class="primary" onclick="generatePrompt()">🚀 Собрать</button>
-  <button onclick="enhancePrompt()">🧠 Усилить</button>
-  <button onclick="translatePrompt()">🌍 English</button>
-  <button onclick="copyText()">📋 Копировать</button>
-  <button onclick="clearAll()">🧹 Очистить</button>
+<div class="actions-main">
+  <button class="primary big" onclick="generatePrompt()">🚀 Собрать промпт</button>
+  <span class="spacer"></span>
+  <button class="ghost-danger" onclick="clearAll()">🧹 Очистить</button>
 </div>
 
-<h3>Готовый промпт (можно редактировать):</h3>
-<textarea id="output" rows="10"></textarea>
+<div class="result-card">
+  <div class="result-header">
+    <h3>Готовый промпт (можно редактировать)</h3>
+    <div class="result-actions">
+      <button onclick="enhancePrompt()">🧠 Усилить</button>
+      <button onclick="translatePrompt()">🌍 English</button>
+      <button class="primary" onclick="copyText()">📋 Копировать</button>
+    </div>
+  </div>
+  <textarea id="output" rows="10"></textarea>
+</div>
 
 <div id="toast"></div>
 
