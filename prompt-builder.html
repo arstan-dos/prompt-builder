@@ -112,6 +112,29 @@
     background: var(--card);
     min-height: 200px;
   }
+
+  /* Мягкое уведомление (тост) */
+  #toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #1f2430;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+    z-index: 1000;
+  }
+
+  #toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 </style>
 
 </head>
@@ -155,6 +178,8 @@
 <h3>Готовый промпт (можно редактировать):</h3>
 <textarea id="output" rows="10"></textarea>
 
+<div id="toast"></div>
+
 <script>
   // Поля, которые мы запоминаем между запусками
   const FIELDS = ["context", "task", "limits", "format", "output"];
@@ -162,6 +187,16 @@
   // Тексты-инструкции для кнопок (вынесены, чтобы не дублировать)
   const ENHANCE_NOTE = "Проанализируй и улучши запрос. Добавь:\n- глубину\n- варианты решений\n- риски\n\n";
   const TRANSLATE_NOTE = "Translate into professional English:\n\n";
+
+  // --- Мягкое уведомление вместо alert ---
+  let toastTimer = null;
+  function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+  }
 
   // --- Сборка промпта ---
   function generatePrompt() {
@@ -184,11 +219,11 @@
   function enhancePrompt() {
     const output = document.getElementById("output");
     if (!output.value.trim()) {
-      alert("Сначала собери промпт");
+      showToast("Сначала собери промпт");
       return;
     }
     if (output.value.startsWith(ENHANCE_NOTE)) {
-      alert("Инструкция «Усилить» уже добавлена");
+      showToast("Инструкция «Усилить» уже добавлена");
       return;
     }
     output.value = ENHANCE_NOTE + output.value;
@@ -199,11 +234,11 @@
   function translatePrompt() {
     const output = document.getElementById("output");
     if (!output.value.trim()) {
-      alert("Сначала собери промпт");
+      showToast("Сначала собери промпт");
       return;
     }
     if (output.value.startsWith(TRANSLATE_NOTE)) {
-      alert("Инструкция перевода уже добавлена");
+      showToast("Инструкция перевода уже добавлена");
       return;
     }
     output.value = TRANSLATE_NOTE + output.value;
@@ -214,19 +249,19 @@
   async function copyText() {
     const text = document.getElementById("output").value;
     if (!text.trim()) {
-      alert("Пусто — нечего копировать");
+      showToast("Пусто — нечего копировать");
       return;
     }
     try {
       await navigator.clipboard.writeText(text);
-      alert("Скопировано ✅");
+      showToast("Скопировано ✅");
     } catch (e) {
       // Резервный способ (на случай, если основной заблокирован браузером)
       const output = document.getElementById("output");
       output.select();
       const ok = document.execCommand("copy");
       window.getSelection().removeAllRanges();
-      alert(ok ? "Скопировано ✅" : "Не удалось скопировать — выдели текст и нажми Ctrl+C");
+      showToast(ok ? "Скопировано ✅" : "Не удалось — выдели текст и нажми Ctrl+C");
     }
   }
 
