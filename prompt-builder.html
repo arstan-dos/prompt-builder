@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>AI Prompt Builder</title>
+
+<style>
+body {
+  font-family: Arial;
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+textarea {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+button {
+  padding: 10px;
+  margin: 5px 5px 5px 0;
+  cursor: pointer;
+}
+
+label {
+  font-weight: bold;
+  cursor: help;
+}
+
+.tooltip {
+  color: #555;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+</style>
+
+</head>
+<body>
+
+<h2>🚀 AI Prompt Builder</h2>
+
+<label title="Что происходит? Опиши проект. Пример: Разрабатываю центр реабилитации">Контекст</label>
+<div class="tooltip">Пример: Разрабатываю новый проект...</div>
+<textarea id="context"></textarea>
+
+<label title="Что нужно получить? Пример: Усилить концепцию">Задача</label>
+<div class="tooltip">Пример: Сделать лучше, усилить...</div>
+<textarea id="task"></textarea>
+
+<label title="Какие ограничения? Пример: бюджет, сроки">Ограничения</label>
+<div class="tooltip">Пример: Ограниченный бюджет...</div>
+<textarea id="limits"></textarea>
+
+<label title="Как должен выглядеть ответ?">Формат ответа</label>
+<div class="tooltip">Пример: список + структура</div>
+<textarea id="format"></textarea>
+
+<button onclick="generatePrompt()">🚀 Собрать</button>
+<button onclick="enhancePrompt()">🧠 Усилить</button>
+<button onclick="translatePrompt()">🌍 English</button>
+<button onclick="copyText()">📋 Копировать</button>
+
+<h3>Готовый промпт (можно редактировать):</h3>
+<textarea id="output" rows="10"></textarea>
+
+<script>
+
+function generatePrompt() {
+  var context = document.getElementById("context").value;
+  var task = document.getElementById("task").value;
+  var limits = document.getElementById("limits").value;
+  var format = document.getElementById("format").value;
+
+  var prompt = "Контекст:\n" + context +
+               "\n\nЗадача:\n" + task +
+               "\n\nОграничения:\n" + limits +
+               "\n\nФормат ответа:\n" + format;
+
+  document.getElementById("output").value = prompt;
+}
+
+function enhancePrompt() {
+  var text = document.getElementById("output").value;
+
+  if (!text) {
+    alert("Сначала собери промпт");
+    return;
+  }
+
+  var result = "Проанализируй и улучши запрос. Добавь:\n- глубину\n- варианты решений\n- риски\n\n" + text;
+
+  document.getElementById("output").value = result;
+}
+
+function translatePrompt() {
+  var text = document.getElementById("output").value;
+
+  if (!text) {
+    alert("Сначала собери промпт");
+    return;
+  }
+
+  var result = "Translate into professional English:\n\n" + text;
+
+  document.getElementById("output").value = result;
+}
+
+function copyText() {
+  var text = document.getElementById("output").value;
+
+  if (!text) {
+    alert("Пусто");
+    return;
+  }
+
+  navigator.clipboard.writeText(text);
+  alert("Скопировано ✅");
+}
+
+</script>
+
+</body>
+</html>
+``
