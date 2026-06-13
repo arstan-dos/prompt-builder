@@ -163,6 +163,19 @@
     font-weight: 600;
   }
 
+  /* «Тихая» нейтральная кнопка (напр. «Шаг назад») */
+  button.ghost {
+    background: transparent;
+    border-color: transparent;
+    color: var(--muted);
+  }
+
+  button.ghost:hover {
+    background: rgba(31, 36, 48, 0.06);
+    border-color: transparent;
+    color: var(--text);
+  }
+
   /* «Тихая» опасная кнопка «Очистить» */
   button.ghost-danger {
     background: transparent;
@@ -255,7 +268,7 @@
 <div class="actions-main">
   <button class="primary big" onclick="generatePrompt()">🚀 Собрать промпт</button>
   <span class="spacer"></span>
-  <button onclick="undo()" title="Вернуть предыдущее состояние (Ctrl+Z)">↶ Шаг назад</button>
+  <button class="ghost" onclick="undo()" title="Вернуть предыдущее состояние (Ctrl+Z)">↶ Шаг назад</button>
   <button class="ghost-danger" onclick="clearAll()">🧹 Очистить</button>
 </div>
 
