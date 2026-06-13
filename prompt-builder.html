@@ -255,6 +255,7 @@
 <div class="actions-main">
   <button class="primary big" onclick="generatePrompt()">🚀 Собрать промпт</button>
   <span class="spacer"></span>
+  <button onclick="undo()" title="Вернуть предыдущее состояние (Ctrl+Z)">↶ Шаг назад</button>
   <button class="ghost-danger" onclick="clearAll()">🧹 Очистить</button>
 </div>
 
@@ -277,6 +278,58 @@
 
   // Текст-инструкция для кнопки «Усилить»
   const ENHANCE_NOTE = "Проанализируй и улучши запрос. Добавь:\n- глубину\n- варианты решений\n- риски\n\n";
+
+  // --- История для «Шага назад» (хранит до 5 прошлых состояний) ---
+  const HISTORY_LIMIT = 5;
+  let history = [];
+
+  // Снимок текущего содержимого всех полей
+  function snapshot() {
+    const s = {};
+    FIELDS.forEach(id => s[id] = document.getElementById(id).value);
+    return s;
+  }
+
+  // Два состояния одинаковы?
+  function sameState(a, b) {
+    return FIELDS.every(id => a[id] === b[id]);
+  }
+
+  // Положить конкретное состояние в историю (без дублей, не больше 5)
+  function pushState(state) {
+    if (history.length && sameState(history[history.length - 1], state)) return;
+    history.push(state);
+    if (history.length > HISTORY_LIMIT) history.shift();
+  }
+
+  // Сохранить ТЕКУЩЕЕ состояние в историю (перед изменением)
+  function recordHistory() {
+    pushState(snapshot());
+  }
+
+  // Применить состояние к полям
+  function applyState(s) {
+    FIELDS.forEach(id => {
+      const el = document.getElementById(id);
+      el.value = s[id];
+      autoGrow(el);
+    });
+    saveAll();
+  }
+
+  // Шаг назад: вернуть предыдущее состояние
+  function undo() {
+    if (!history.length) {
+      showToast("Нечего отменять");
+      return;
+    }
+    const cur = snapshot();
+    let prev = history.pop();
+    // если последнее сохранённое совпадает с текущим — берём ещё предыдущее
+    if (sameState(prev, cur) && history.length) prev = history.pop();
+    applyState(prev);
+    showToast("Шаг назад ↶");
+  }
 
   // --- Авто-рост поля по высоте текста ---
   function autoGrow(el) {
@@ -312,6 +365,7 @@
 
   // --- Сборка промпта ---
   function generatePrompt() {
+    recordHistory();
     const context = document.getElementById("context").value;
     const task = document.getElementById("task").value;
     const limits = document.getElementById("limits").value;
@@ -340,6 +394,7 @@
       showToast("Инструкция «Усилить» уже добавлена");
       return;
     }
+    recordHistory();
     output.value = ENHANCE_NOTE + output.value;
     autoGrow(output);
     saveAll();
@@ -367,18 +422,14 @@
 
   // --- Очистить все поля (сразу, с возможностью отменить) ---
   function clearAll() {
-    // Запоминаем текущее содержимое на случай отмены
-    const backup = {};
-    FIELDS.forEach(id => backup[id] = document.getElementById(id).value);
-
     // Если и так пусто — ничего не делаем
-    const hadText = Object.values(backup).some(v => v.trim() !== "");
+    const hadText = FIELDS.some(id => document.getElementById(id).value.trim() !== "");
     if (!hadText) {
       showToast("Поля уже пусты");
       return;
     }
 
-    // Очищаем
+    recordHistory(); // запоминаем перед очисткой
     FIELDS.forEach(id => {
       const el = document.getElementById(id);
       el.value = "";
@@ -386,19 +437,8 @@
     });
     saveAll();
 
-    // Мягкое уведомление с кнопкой «Отменить»
-    showToast("Очищено", {
-      label: "Отменить",
-      callback: () => {
-        FIELDS.forEach(id => {
-          const el = document.getElementById(id);
-          el.value = backup[id];
-          autoGrow(el);
-        });
-        saveAll();
-        showToast("Восстановлено ✅");
-      }
-    });
+    // Мягкое уведомление с кнопкой «Отменить» (делает шаг назад)
+    showToast("Очищено", { label: "Отменить", callback: undo });
   }
 
   // --- Память между запусками (localStorage) ---
@@ -415,13 +455,36 @@
     });
   }
 
-  // При наборе текста: сохраняем и подгоняем высоту
+  // Состояние поля в момент, когда пользователь начал его редактировать
+  let editStartState = null;
+
   FIELDS.forEach(id => {
     const el = document.getElementById(id);
+
+    // Запоминаем состояние ДО начала редактирования
+    el.addEventListener("focus", () => { editStartState = snapshot(); });
+
+    // Если при уходе из поля содержимое изменилось — сохраняем в историю
+    el.addEventListener("blur", () => {
+      if (editStartState && !sameState(editStartState, snapshot())) {
+        pushState(editStartState);
+      }
+    });
+
+    // При наборе: сохраняем и подгоняем высоту
     el.addEventListener("input", () => {
       saveAll();
       autoGrow(el);
     });
+  });
+
+  // Ctrl+Z / Cmd+Z — шаг назад (но не мешаем родной отмене букв внутри поля)
+  document.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
+      if (document.activeElement && document.activeElement.tagName === "TEXTAREA") return;
+      e.preventDefault();
+      undo();
+    }
   });
 
   // Загружаем сохранённое при открытии и сразу подгоняем высоту всех полей
