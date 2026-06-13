@@ -69,7 +69,8 @@
     padding: 10px;
     font-family: inherit;
     font-size: 14px;
-    resize: vertical;
+    resize: none;
+    overflow: hidden;
     min-height: 56px;
   }
 
@@ -245,7 +246,6 @@
     <h3>Готовый промпт (можно редактировать)</h3>
     <div class="result-actions">
       <button onclick="enhancePrompt()">🧠 Усилить</button>
-      <button onclick="translatePrompt()">🌍 English</button>
       <button class="primary" onclick="copyText()">📋 Копировать</button>
     </div>
   </div>
@@ -258,9 +258,14 @@
   // Поля, которые мы запоминаем между запусками
   const FIELDS = ["context", "task", "limits", "format", "output"];
 
-  // Тексты-инструкции для кнопок (вынесены, чтобы не дублировать)
+  // Текст-инструкция для кнопки «Усилить»
   const ENHANCE_NOTE = "Проанализируй и улучши запрос. Добавь:\n- глубину\n- варианты решений\n- риски\n\n";
-  const TRANSLATE_NOTE = "Translate into professional English:\n\n";
+
+  // --- Авто-рост поля по высоте текста ---
+  function autoGrow(el) {
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + "px";
+  }
 
   // --- Мягкое уведомление вместо alert ---
   let toastTimer = null;
@@ -285,7 +290,9 @@
       "\n\nУсловия и рамки:\n" + limits +
       "\n\nФормат ответа:\n" + format;
 
-    document.getElementById("output").value = prompt;
+    const output = document.getElementById("output");
+    output.value = prompt;
+    autoGrow(output);
     saveAll();
   }
 
@@ -301,21 +308,7 @@
       return;
     }
     output.value = ENHANCE_NOTE + output.value;
-    saveAll();
-  }
-
-  // --- English: добавляет просьбу о переводе (без повторов) ---
-  function translatePrompt() {
-    const output = document.getElementById("output");
-    if (!output.value.trim()) {
-      showToast("Сначала собери промпт");
-      return;
-    }
-    if (output.value.startsWith(TRANSLATE_NOTE)) {
-      showToast("Инструкция перевода уже добавлена");
-      return;
-    }
-    output.value = TRANSLATE_NOTE + output.value;
+    autoGrow(output);
     saveAll();
   }
 
@@ -342,7 +335,11 @@
   // --- Очистить все поля ---
   function clearAll() {
     if (!confirm("Очистить все поля?")) return;
-    FIELDS.forEach(id => document.getElementById(id).value = "");
+    FIELDS.forEach(id => {
+      const el = document.getElementById(id);
+      el.value = "";
+      autoGrow(el);
+    });
     saveAll();
   }
 
@@ -360,11 +357,18 @@
     });
   }
 
-  // Загружаем сохранённое при открытии и сохраняем при каждом изменении
-  loadAll();
+  // При наборе текста: сохраняем и подгоняем высоту
   FIELDS.forEach(id => {
-    document.getElementById(id).addEventListener("input", saveAll);
+    const el = document.getElementById(id);
+    el.addEventListener("input", () => {
+      saveAll();
+      autoGrow(el);
+    });
   });
+
+  // Загружаем сохранённое при открытии и сразу подгоняем высоту всех полей
+  loadAll();
+  FIELDS.forEach(id => autoGrow(document.getElementById(id)));
 </script>
 
 </body>
