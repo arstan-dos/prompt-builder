@@ -203,6 +203,23 @@
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
+
+  /* Кнопка-действие внутри тоста (напр. «Отменить») */
+  .toast-action {
+    margin-left: 14px;
+    padding: 4px 10px;
+    border: none;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .toast-action:hover {
+    background: rgba(255, 255, 255, 0.28);
+  }
 </style>
 
 </head>
@@ -268,13 +285,29 @@
   }
 
   // --- Мягкое уведомление вместо alert ---
+  // action (необязательно): { label, callback } — добавляет кнопку, напр. «Отменить»
   let toastTimer = null;
-  function showToast(message) {
+  function showToast(message, action) {
     const toast = document.getElementById("toast");
     toast.textContent = message;
+
+    if (action) {
+      const btn = document.createElement("button");
+      btn.className = "toast-action";
+      btn.textContent = action.label;
+      btn.onclick = () => {
+        action.callback();
+        toast.classList.remove("show");
+      };
+      toast.appendChild(btn);
+    }
+
+    // Кнопку можно нажать, только если она есть
+    toast.style.pointerEvents = action ? "auto" : "none";
     toast.classList.add("show");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+    // Если есть действие — даём больше времени на нажатие
+    toastTimer = setTimeout(() => toast.classList.remove("show"), action ? 5000 : 2200);
   }
 
   // --- Сборка промпта ---
@@ -332,15 +365,40 @@
     }
   }
 
-  // --- Очистить все поля ---
+  // --- Очистить все поля (сразу, с возможностью отменить) ---
   function clearAll() {
-    if (!confirm("Очистить все поля?")) return;
+    // Запоминаем текущее содержимое на случай отмены
+    const backup = {};
+    FIELDS.forEach(id => backup[id] = document.getElementById(id).value);
+
+    // Если и так пусто — ничего не делаем
+    const hadText = Object.values(backup).some(v => v.trim() !== "");
+    if (!hadText) {
+      showToast("Поля уже пусты");
+      return;
+    }
+
+    // Очищаем
     FIELDS.forEach(id => {
       const el = document.getElementById(id);
       el.value = "";
       autoGrow(el);
     });
     saveAll();
+
+    // Мягкое уведомление с кнопкой «Отменить»
+    showToast("Очищено", {
+      label: "Отменить",
+      callback: () => {
+        FIELDS.forEach(id => {
+          const el = document.getElementById(id);
+          el.value = backup[id];
+          autoGrow(el);
+        });
+        saveAll();
+        showToast("Восстановлено ✅");
+      }
+    });
   }
 
   // --- Память между запусками (localStorage) ---
