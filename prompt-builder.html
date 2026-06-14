@@ -18,6 +18,34 @@
     --shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 4px 12px rgba(16, 24, 40, 0.06);
   }
 
+  /* Тёмная тема — выбрана вручную */
+  :root[data-theme="dark"] {
+    --bg: #0f1420;
+    --card: #1a2030;
+    --text: #e6e8ec;
+    --muted: #9aa3b2;
+    --border: #2b3346;
+    --accent: #818cf8;
+    --accent-hover: #a5b0ff;
+    --danger: #f87171;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 14px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Тёмная тема — авто по системе (если пользователь не выбрал светлую вручную) */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1420;
+      --card: #1a2030;
+      --text: #e6e8ec;
+      --muted: #9aa3b2;
+      --border: #2b3346;
+      --accent: #818cf8;
+      --accent-hover: #a5b0ff;
+      --danger: #f87171;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 14px rgba(0, 0, 0, 0.4);
+    }
+  }
+
   * { box-sizing: border-box; }
 
   body {
@@ -28,11 +56,37 @@
     margin: 0 auto;
     padding: 24px 16px 60px;
     line-height: 1.5;
+    transition: background 0.25s, color 0.25s;
+  }
+
+  /* Шапка: заголовок слева, переключатель темы справа */
+  .app-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
   }
 
   h2 {
     margin: 0 0 4px;
     font-size: 26px;
+  }
+
+  /* Градиентный текст логотипа */
+  .logo-text {
+    background: linear-gradient(90deg, var(--accent), #a855f7);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Кнопка переключения темы */
+  .theme-toggle {
+    flex-shrink: 0;
+    font-size: 18px;
+    line-height: 1;
+    padding: 8px 12px;
+    border-radius: 50%;
   }
 
   .subtitle {
@@ -319,8 +373,13 @@
 </head>
 <body>
 
-<h2>🚀 AI Prompt Builder</h2>
-<p class="subtitle">Помощник для сборки понятных промптов к нейросетям</p>
+<div class="app-header">
+  <div>
+    <h2><span class="logo-emoji">🚀</span> <span class="logo-text">AI Prompt Builder</span></h2>
+    <p class="subtitle">Помощник для сборки понятных промптов к нейросетям</p>
+  </div>
+  <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" title="Сменить тему (светлая/тёмная)">🌙</button>
+</div>
 
 <div class="field">
   <label for="context" title="Что происходит? Опиши проект.">Контекст</label>
@@ -432,6 +491,34 @@
     if (sameState(prev, cur) && history.length) prev = history.pop();
     applyState(prev);
     showToast("Шаг назад ↶");
+  }
+
+  // ===== Тема (светлая/тёмная) =====
+  function isDarkNow() {
+    const t = document.documentElement.getAttribute("data-theme");
+    if (t === "dark") return true;
+    if (t === "light") return false;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches; // авто по системе
+  }
+
+  function updateThemeIcon() {
+    const btn = document.getElementById("themeToggle");
+    if (btn) btn.textContent = isDarkNow() ? "☀️" : "🌙";
+  }
+
+  function applyTheme(theme) {
+    if (theme === "dark" || theme === "light") {
+      document.documentElement.setAttribute("data-theme", theme);
+    } else {
+      document.documentElement.removeAttribute("data-theme"); // авто
+    }
+    updateThemeIcon();
+  }
+
+  function toggleTheme() {
+    const next = isDarkNow() ? "light" : "dark";
+    localStorage.setItem("pb_theme", next);
+    applyTheme(next);
   }
 
   // --- Авто-рост поля по высоте текста ---
@@ -728,6 +815,9 @@
 
   // Показываем историю запросов
   renderLog();
+
+  // Применяем сохранённую тему (или авто по системе)
+  applyTheme(localStorage.getItem("pb_theme"));
 </script>
 
 </body>
