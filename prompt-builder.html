@@ -227,6 +227,77 @@
     transform: translateX(-50%) translateY(0);
   }
 
+  /* История запросов */
+  .history {
+    margin-top: 28px;
+  }
+
+  .history-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .history-header h3 {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .info-hint {
+    margin-right: auto;
+    color: var(--muted);
+    font-size: 15px;
+    cursor: help;
+  }
+
+  .log-empty {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .log-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    box-shadow: var(--shadow);
+  }
+
+  .log-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .log-title {
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .log-time {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  .log-actions {
+    display: flex;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+
+  .log-actions button {
+    padding: 6px 8px;
+    font-size: 15px;
+  }
+
   /* Кнопка-действие внутри тоста (напр. «Отменить») */
   .toast-action {
     margin-left: 14px;
@@ -291,6 +362,15 @@
     </div>
   </div>
   <textarea id="output" rows="10"></textarea>
+</div>
+
+<div class="history">
+  <div class="history-header">
+    <h3>🕘 История запросов</h3>
+    <span class="info-hint" title="Сохраняются последние 5 промптов. Когда появляется новый — самый старый удаляется автоматически.">ⓘ</span>
+    <button class="ghost" onclick="clearLog()">Очистить историю</button>
+  </div>
+  <div id="logList"></div>
 </div>
 
 <div id="toast"></div>
@@ -405,6 +485,17 @@
     autoGrow(output);
     saveAll();
 
+    // Сохраняем в историю запросов (если заполнено хоть одно поле)
+    if ([context, task, limits, format].some(v => v.trim() !== "")) {
+      const now = Date.now();
+      addToLog({
+        id: now,
+        time: now,
+        fields: { context, task, limits, format },
+        prompt: prompt
+      });
+    }
+
     // Перезапуск анимации появления
     output.classList.remove("appear");
     void output.offsetWidth; // заставляем браузер «заметить» сброс
@@ -428,9 +519,8 @@
     saveAll();
   }
 
-  // --- Копирование с честной проверкой результата ---
-  async function copyText() {
-    const text = document.getElementById("output").value;
+  // --- Копирование текста в буфер (общий помощник) ---
+  async function copyToClipboard(text) {
     if (!text.trim()) {
       showToast("Пусто — нечего копировать");
       return;
@@ -439,13 +529,22 @@
       await navigator.clipboard.writeText(text);
       showToast("Скопировано ✅");
     } catch (e) {
-      // Резервный способ (на случай, если основной заблокирован браузером)
-      const output = document.getElementById("output");
-      output.select();
+      // Резервный способ (если основной заблокирован браузером)
+      const tmp = document.createElement("textarea");
+      tmp.value = text;
+      tmp.style.position = "fixed";
+      tmp.style.opacity = "0";
+      document.body.appendChild(tmp);
+      tmp.select();
       const ok = document.execCommand("copy");
-      window.getSelection().removeAllRanges();
+      document.body.removeChild(tmp);
       showToast(ok ? "Скопировано ✅" : "Не удалось — выдели текст и нажми Ctrl+C");
     }
+  }
+
+  // Кнопка «Копировать» у готового промпта
+  function copyText() {
+    copyToClipboard(document.getElementById("output").value);
   }
 
   // --- Очистить все поля (сразу, с возможностью отменить) ---
@@ -467,6 +566,111 @@
 
     // Мягкое уведомление с кнопкой «Отменить» (делает шаг назад)
     showToast("Очищено", { label: "Отменить", callback: undo });
+  }
+
+  // ===== История запросов =====
+  const LOG_KEY = "pb_log";
+  const LOG_MAX = 5; // храним только последние 5 промптов
+
+  function loadLog() {
+    try {
+      return JSON.parse(localStorage.getItem(LOG_KEY)) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveLog(list) {
+    localStorage.setItem(LOG_KEY, JSON.stringify(list));
+  }
+
+  // Добавить запись (новые — сверху, дубли пропускаем, держим максимум 5)
+  function addToLog(entry) {
+    const list = loadLog();
+    if (list.length && list[0].prompt === entry.prompt) return;
+    list.unshift(entry);
+    if (list.length > LOG_MAX) list.length = LOG_MAX;
+    saveLog(list);
+    renderLog();
+  }
+
+  function deleteFromLog(id) {
+    saveLog(loadLog().filter(e => e.id !== id));
+    renderLog();
+  }
+
+  function clearLog() {
+    if (!loadLog().length) {
+      showToast("История пуста");
+      return;
+    }
+    saveLog([]);
+    renderLog();
+    showToast("История очищена");
+  }
+
+  function copyFromLog(id) {
+    const entry = loadLog().find(e => e.id === id);
+    if (entry) copyToClipboard(entry.prompt);
+  }
+
+  // Загрузить запись обратно в форму
+  function loadFromLog(id) {
+    const entry = loadLog().find(e => e.id === id);
+    if (!entry) return;
+    recordHistory(); // чтобы загрузку можно было отменить «Шагом назад»
+    FIELDS.forEach(fid => {
+      const el = document.getElementById(fid);
+      el.value = (fid === "output") ? entry.prompt : (entry.fields[fid] || "");
+      autoGrow(el);
+    });
+    saveAll();
+    showToast("Загружено из истории ✅");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // Защита от поломки разметки чужим текстом
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, c =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  // Короткий заголовок записи (берём «Задачу», иначе сам промпт)
+  function logTitle(entry) {
+    const raw = (entry.fields && entry.fields.task && entry.fields.task.trim())
+      ? entry.fields.task.trim()
+      : entry.prompt.trim();
+    const oneLine = raw.replace(/\s+/g, " ");
+    return oneLine.length > 70 ? oneLine.slice(0, 70) + "…" : (oneLine || "Без названия");
+  }
+
+  function formatTime(ms) {
+    return new Date(ms).toLocaleString("ru-RU", {
+      day: "2-digit", month: "2-digit", year: "numeric",
+      hour: "2-digit", minute: "2-digit"
+    });
+  }
+
+  function renderLog() {
+    const box = document.getElementById("logList");
+    const list = loadLog();
+    if (!list.length) {
+      box.innerHTML = '<p class="log-empty">Здесь будут появляться собранные промпты.</p>';
+      return;
+    }
+    box.innerHTML = list.map(e => `
+      <div class="log-item">
+        <div class="log-info">
+          <div class="log-title">${escapeHtml(logTitle(e))}</div>
+          <div class="log-time">${formatTime(e.time)}</div>
+        </div>
+        <div class="log-actions">
+          <button class="ghost" onclick="copyFromLog(${e.id})" title="Копировать">📋</button>
+          <button class="ghost" onclick="loadFromLog(${e.id})" title="Загрузить в форму">↩️</button>
+          <button class="ghost" onclick="deleteFromLog(${e.id})" title="Удалить">🗑</button>
+        </div>
+      </div>
+    `).join("");
   }
 
   // --- Память между запусками (localStorage) ---
@@ -521,6 +725,9 @@
   // Загружаем сохранённое при открытии и сразу подгоняем высоту всех полей
   loadAll();
   FIELDS.forEach(id => autoGrow(document.getElementById(id)));
+
+  // Показываем историю запросов
+  renderLog();
 </script>
 
 </body>
