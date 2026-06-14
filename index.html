@@ -264,9 +264,53 @@
     color: var(--danger);
   }
 
+  /* Редактор результата: подсветка-подложка под прозрачным полем */
+  .editor {
+    position: relative;
+  }
+
+  /* Подложка и поле должны совпадать ВСЕМИ метриками, чтобы текст лёг ровно */
+  .editor-backdrop,
   #output {
-    background: var(--card);
+    margin: 0;
+    width: 100%;
     min-height: 200px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    box-sizing: border-box;
+  }
+
+  /* Подложка показывает текст; заголовки — серые */
+  .editor-backdrop {
+    position: absolute;
+    inset: 0;
+    color: var(--text);
+    background: var(--card);
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  /* Само поле прозрачное — видно подложку, но курсор и ввод работают */
+  #output {
+    position: relative;
+    z-index: 1;
+    background: transparent;
+    color: transparent;
+    caret-color: var(--text);
+    resize: none;
+    overflow: hidden;
+  }
+
+  /* Заголовки промпта в подложке — приглушённые */
+  .ph-header {
+    color: var(--muted);
   }
 
   /* Плавное появление готового промпта */
@@ -275,7 +319,7 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  #output.appear {
+  #outputHighlight.appear {
     animation: promptAppear 0.45s ease;
   }
 
@@ -451,7 +495,10 @@
       <button class="primary" onclick="copyText()" data-i18n="btn_copy">📋 Копировать</button>
     </div>
   </div>
-  <textarea id="output" rows="10"></textarea>
+  <div class="editor">
+    <div id="outputHighlight" class="editor-backdrop" aria-hidden="true"></div>
+    <textarea id="output" rows="10"></textarea>
+  </div>
 </div>
 
 <div class="history">
@@ -797,6 +844,7 @@
   function autoGrow(el) {
     el.style.height = "auto";
     el.style.height = el.scrollHeight + "px";
+    if (el.id === "output") renderOutputHighlight(); // держим подложку в синхроне
   }
 
   // --- Мягкое уведомление вместо alert ---
@@ -855,10 +903,11 @@
       });
     }
 
-    // Перезапуск анимации появления
-    output.classList.remove("appear");
-    void output.offsetWidth; // заставляем браузер «заметить» сброс
-    output.classList.add("appear");
+    // Перезапуск анимации появления (на подложке-подсветке)
+    const bd = document.getElementById("outputHighlight");
+    bd.classList.remove("appear");
+    void bd.offsetWidth; // заставляем браузер «заметить» сброс
+    bd.classList.add("appear");
   }
 
   // --- Усилить: дописывает инструкцию сверху (без повторов) ---
@@ -993,6 +1042,29 @@
   function escapeHtml(s) {
     return s.replace(/[&<>"']/g, c =>
       ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  // Набор всех заголовков промпта (на всех языках) — для подсветки
+  const HEADER_SET = new Set();
+  Object.values(I18N).forEach(L => {
+    ["prompt_context", "prompt_task", "prompt_limits", "prompt_format"].forEach(k => {
+      if (L[k]) HEADER_SET.add(L[k] + ":");
+    });
+  });
+
+  // Раскраска подложки: строки-заголовки серые, текст пользователя обычный
+  function highlightHeaders(text) {
+    return text.split("\n").map(line =>
+      HEADER_SET.has(line.trim())
+        ? '<span class="ph-header">' + escapeHtml(line) + '</span>'
+        : escapeHtml(line)
+    ).join("\n");
+  }
+
+  // Обновить подложку под текущим содержимым поля
+  function renderOutputHighlight() {
+    const bd = document.getElementById("outputHighlight");
+    if (bd) bd.innerHTML = highlightHeaders(document.getElementById("output").value);
   }
 
   // Короткий заголовок записи (берём «Задачу», иначе сам промпт)
