@@ -82,6 +82,25 @@
     color: transparent;
   }
 
+  /* Правый блок шапки: язык + тема */
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  /* Переключатель языка */
+  .lang-select {
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 7px 8px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
   /* Кнопка переключения темы */
   .theme-toggle {
     flex-shrink: 0;
@@ -378,48 +397,57 @@
 <div class="app-header">
   <div>
     <h2><span class="logo-emoji">🚀</span> <span class="logo-text">AI Prompt Builder</span></h2>
-    <p class="subtitle">Помощник для сборки понятных промптов к нейросетям</p>
+    <p class="subtitle" data-i18n="subtitle">Помощник для сборки понятных промптов к нейросетям</p>
   </div>
-  <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" title="Сменить тему (светлая/тёмная)">🌙</button>
+  <div class="header-controls">
+    <select id="langSelect" class="lang-select" onchange="setLang(this.value)" data-i18n-title="lang_title" title="Язык интерфейса">
+      <option value="en">English</option>
+      <option value="ru">Русский</option>
+      <option value="es">Español</option>
+      <option value="zh">中文</option>
+      <option value="pt">Português</option>
+    </select>
+    <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" data-i18n-title="theme_toggle_title" title="Сменить тему (светлая/тёмная)">🌙</button>
+  </div>
 </div>
 
 <div class="field">
-  <label for="context" title="Что происходит? Опиши проект.">Контекст</label>
-  <div class="tooltip">Пример: Разрабатываю центр реабилитации...</div>
+  <label for="context" data-i18n="label_context" data-i18n-title="title_context" title="Что происходит? Опиши проект.">Контекст</label>
+  <div class="tooltip" data-i18n="tooltip_context">Пример: Разрабатываю центр реабилитации...</div>
   <textarea id="context"></textarea>
 </div>
 
 <div class="field">
-  <label for="task" title="Что нужно получить?">Задача</label>
-  <div class="tooltip">Пример: Сделать лучше, усилить концепцию...</div>
+  <label for="task" data-i18n="label_task" data-i18n-title="title_task" title="Что нужно получить?">Задача</label>
+  <div class="tooltip" data-i18n="tooltip_task">Пример: Сделать лучше, усилить концепцию...</div>
   <textarea id="task"></textarea>
 </div>
 
 <div class="field">
-  <label for="limits" title="Какие условия и рамки?">Условия и рамки</label>
-  <div class="tooltip">Пример: бюджет, сроки, технологии...</div>
+  <label for="limits" data-i18n="label_limits" data-i18n-title="title_limits" title="Какие условия и рамки?">Условия и рамки</label>
+  <div class="tooltip" data-i18n="tooltip_limits">Пример: бюджет, сроки, технологии...</div>
   <textarea id="limits"></textarea>
 </div>
 
 <div class="field">
-  <label for="format" title="Как должен выглядеть ответ?">Формат ответа</label>
-  <div class="tooltip">Пример: список + структура</div>
+  <label for="format" data-i18n="label_format" data-i18n-title="title_format" title="Как должен выглядеть ответ?">Формат ответа</label>
+  <div class="tooltip" data-i18n="tooltip_format">Пример: список + структура</div>
   <textarea id="format"></textarea>
 </div>
 
 <div class="actions-main">
-  <button class="primary big" onclick="generatePrompt()">🚀 Собрать промпт</button>
+  <button class="primary big" onclick="generatePrompt()" data-i18n="btn_build">🚀 Собрать промпт</button>
   <span class="spacer"></span>
-  <button class="ghost" onclick="undo()" title="Вернуть предыдущее состояние (Ctrl+Z)">↶ Шаг назад</button>
-  <button class="ghost-danger" onclick="clearAll()">🧹 Очистить</button>
+  <button class="ghost" onclick="undo()" data-i18n="btn_undo" data-i18n-title="title_undo" title="Вернуть предыдущее состояние (Ctrl+Z)">↶ Шаг назад</button>
+  <button class="ghost-danger" onclick="clearAll()" data-i18n="btn_clear">🧹 Очистить</button>
 </div>
 
 <div class="result-card">
   <div class="result-header">
-    <h3>Готовый промпт (можно редактировать)</h3>
+    <h3 data-i18n="result_title">Готовый промпт (можно редактировать)</h3>
     <div class="result-actions">
-      <button onclick="enhancePrompt()">🧠 Усилить</button>
-      <button class="primary" onclick="copyText()">📋 Копировать</button>
+      <button onclick="enhancePrompt()" data-i18n="btn_enhance">🧠 Усилить</button>
+      <button class="primary" onclick="copyText()" data-i18n="btn_copy">📋 Копировать</button>
     </div>
   </div>
   <textarea id="output" rows="10"></textarea>
@@ -427,9 +455,9 @@
 
 <div class="history">
   <div class="history-header">
-    <h3>🕘 История запросов</h3>
-    <span class="info-hint" title="Сохраняются последние 5 промптов. Когда появляется новый — самый старый удаляется автоматически.">ⓘ</span>
-    <button class="ghost" onclick="clearLog()">Очистить историю</button>
+    <h3 data-i18n="history_title">🕘 История запросов</h3>
+    <span class="info-hint" data-i18n-title="info_hint" title="Сохраняются последние 5 промптов. Когда появляется новый — самый старый удаляется автоматически.">ⓘ</span>
+    <button class="ghost" onclick="clearLog()" data-i18n="btn_clear_history">Очистить историю</button>
   </div>
   <div id="logList"></div>
 </div>
@@ -440,8 +468,215 @@
   // Поля, которые мы запоминаем между запусками
   const FIELDS = ["context", "task", "limits", "format", "output"];
 
-  // Текст-инструкция для кнопки «Усилить»
-  const ENHANCE_NOTE = "Проанализируй и улучши запрос. Добавь:\n- глубину\n- варианты решений\n- риски\n\n";
+  // ===== Переводы интерфейса (5 языков) =====
+  const I18N = {
+    en: {
+      subtitle: "A helper for building clear prompts for AI",
+      label_context: "Context", title_context: "What's going on? Describe your project.",
+      tooltip_context: "Example: I'm developing a rehabilitation center...",
+      label_task: "Task", title_task: "What do you need to get?",
+      tooltip_task: "Example: Make it better, strengthen the concept...",
+      label_limits: "Conditions & constraints", title_limits: "What conditions and constraints?",
+      tooltip_limits: "Example: budget, deadlines, technologies...",
+      label_format: "Response format", title_format: "What should the answer look like?",
+      tooltip_format: "Example: list + structure",
+      btn_build: "🚀 Build prompt",
+      btn_undo: "↶ Undo", title_undo: "Restore previous state (Ctrl+Z)",
+      btn_clear: "🧹 Clear",
+      result_title: "Final prompt (editable)",
+      btn_enhance: "🧠 Enhance", btn_copy: "📋 Copy",
+      history_title: "🕘 Request history",
+      info_hint: "The last 5 prompts are saved. When a new one appears, the oldest is removed automatically.",
+      btn_clear_history: "Clear history",
+      log_empty: "Your built prompts will appear here.", log_untitled: "Untitled",
+      title_copy: "Copy", title_load: "Load into form", title_delete: "Delete",
+      theme_toggle_title: "Switch theme (light/dark)", lang_title: "Interface language",
+      toast_need_build: "Build the prompt first",
+      toast_enhance_added: "The “Enhance” instruction is already added",
+      toast_copied: "Copied ✅", toast_copy_empty: "Empty — nothing to copy",
+      toast_copy_fail: "Couldn't copy — select the text and press Ctrl+C",
+      toast_nothing_undo: "Nothing to undo", toast_undo: "Undone ↶",
+      toast_cleared: "Cleared", toast_clear_already: "Fields are already empty",
+      toast_undo_label: "Undo",
+      toast_history_empty: "History is empty", toast_history_cleared: "History cleared",
+      toast_loaded: "Loaded from history ✅",
+      prompt_context: "Context", prompt_task: "Task",
+      prompt_limits: "Conditions & constraints", prompt_format: "Response format",
+      enhance_note: "Analyze and improve the request. Add:\n- depth\n- alternative solutions\n- risks\n\n"
+    },
+    ru: {
+      subtitle: "Помощник для сборки понятных промптов к нейросетям",
+      label_context: "Контекст", title_context: "Что происходит? Опиши проект.",
+      tooltip_context: "Пример: Разрабатываю центр реабилитации...",
+      label_task: "Задача", title_task: "Что нужно получить?",
+      tooltip_task: "Пример: Сделать лучше, усилить концепцию...",
+      label_limits: "Условия и рамки", title_limits: "Какие условия и рамки?",
+      tooltip_limits: "Пример: бюджет, сроки, технологии...",
+      label_format: "Формат ответа", title_format: "Как должен выглядеть ответ?",
+      tooltip_format: "Пример: список + структура",
+      btn_build: "🚀 Собрать промпт",
+      btn_undo: "↶ Шаг назад", title_undo: "Вернуть предыдущее состояние (Ctrl+Z)",
+      btn_clear: "🧹 Очистить",
+      result_title: "Готовый промпт (можно редактировать)",
+      btn_enhance: "🧠 Усилить", btn_copy: "📋 Копировать",
+      history_title: "🕘 История запросов",
+      info_hint: "Сохраняются последние 5 промптов. Когда появляется новый — самый старый удаляется автоматически.",
+      btn_clear_history: "Очистить историю",
+      log_empty: "Здесь будут появляться собранные промпты.", log_untitled: "Без названия",
+      title_copy: "Копировать", title_load: "Загрузить в форму", title_delete: "Удалить",
+      theme_toggle_title: "Сменить тему (светлая/тёмная)", lang_title: "Язык интерфейса",
+      toast_need_build: "Сначала собери промпт",
+      toast_enhance_added: "Инструкция «Усилить» уже добавлена",
+      toast_copied: "Скопировано ✅", toast_copy_empty: "Пусто — нечего копировать",
+      toast_copy_fail: "Не удалось — выдели текст и нажми Ctrl+C",
+      toast_nothing_undo: "Нечего отменять", toast_undo: "Шаг назад ↶",
+      toast_cleared: "Очищено", toast_clear_already: "Поля уже пусты",
+      toast_undo_label: "Отменить",
+      toast_history_empty: "История пуста", toast_history_cleared: "История очищена",
+      toast_loaded: "Загружено из истории ✅",
+      prompt_context: "Контекст", prompt_task: "Задача",
+      prompt_limits: "Условия и рамки", prompt_format: "Формат ответа",
+      enhance_note: "Проанализируй и улучши запрос. Добавь:\n- глубину\n- варианты решений\n- риски\n\n"
+    },
+    es: {
+      subtitle: "Asistente para crear prompts claros para la IA",
+      label_context: "Contexto", title_context: "¿Qué ocurre? Describe tu proyecto.",
+      tooltip_context: "Ejemplo: Estoy desarrollando un centro de rehabilitación...",
+      label_task: "Tarea", title_task: "¿Qué necesitas obtener?",
+      tooltip_task: "Ejemplo: Mejorarlo, reforzar el concepto...",
+      label_limits: "Condiciones y límites", title_limits: "¿Qué condiciones y límites?",
+      tooltip_limits: "Ejemplo: presupuesto, plazos, tecnologías...",
+      label_format: "Formato de respuesta", title_format: "¿Cómo debe ser la respuesta?",
+      tooltip_format: "Ejemplo: lista + estructura",
+      btn_build: "🚀 Crear prompt",
+      btn_undo: "↶ Deshacer", title_undo: "Restaurar el estado anterior (Ctrl+Z)",
+      btn_clear: "🧹 Limpiar",
+      result_title: "Prompt final (editable)",
+      btn_enhance: "🧠 Mejorar", btn_copy: "📋 Copiar",
+      history_title: "🕘 Historial de solicitudes",
+      info_hint: "Se guardan los últimos 5 prompts. Cuando aparece uno nuevo, el más antiguo se elimina automáticamente.",
+      btn_clear_history: "Borrar historial",
+      log_empty: "Aquí aparecerán los prompts que crees.", log_untitled: "Sin título",
+      title_copy: "Copiar", title_load: "Cargar en el formulario", title_delete: "Eliminar",
+      theme_toggle_title: "Cambiar tema (claro/oscuro)", lang_title: "Idioma de la interfaz",
+      toast_need_build: "Primero crea el prompt",
+      toast_enhance_added: "La instrucción «Mejorar» ya está añadida",
+      toast_copied: "Copiado ✅", toast_copy_empty: "Vacío — nada que copiar",
+      toast_copy_fail: "No se pudo — selecciona el texto y pulsa Ctrl+C",
+      toast_nothing_undo: "Nada que deshacer", toast_undo: "Deshecho ↶",
+      toast_cleared: "Limpiado", toast_clear_already: "Los campos ya están vacíos",
+      toast_undo_label: "Deshacer",
+      toast_history_empty: "El historial está vacío", toast_history_cleared: "Historial borrado",
+      toast_loaded: "Cargado del historial ✅",
+      prompt_context: "Contexto", prompt_task: "Tarea",
+      prompt_limits: "Condiciones y límites", prompt_format: "Formato de respuesta",
+      enhance_note: "Analiza y mejora la solicitud. Añade:\n- profundidad\n- soluciones alternativas\n- riesgos\n\n"
+    },
+    zh: {
+      subtitle: "帮助你为 AI 构建清晰提示词的工具",
+      label_context: "背景", title_context: "发生了什么？描述你的项目。",
+      tooltip_context: "示例：我正在开发一个康复中心……",
+      label_task: "任务", title_task: "你想得到什么？",
+      tooltip_task: "示例：做得更好，强化概念……",
+      label_limits: "条件与限制", title_limits: "有哪些条件和限制？",
+      tooltip_limits: "示例：预算、期限、技术……",
+      label_format: "回答格式", title_format: "回答应该是什么样子？",
+      tooltip_format: "示例：列表 + 结构",
+      btn_build: "🚀 生成提示词",
+      btn_undo: "↶ 撤销", title_undo: "恢复上一个状态 (Ctrl+Z)",
+      btn_clear: "🧹 清空",
+      result_title: "最终提示词（可编辑）",
+      btn_enhance: "🧠 增强", btn_copy: "📋 复制",
+      history_title: "🕘 历史记录",
+      info_hint: "仅保存最近 5 条提示词。出现新的时，最旧的会自动删除。",
+      btn_clear_history: "清空历史",
+      log_empty: "你生成的提示词会显示在这里。", log_untitled: "无标题",
+      title_copy: "复制", title_load: "载入表单", title_delete: "删除",
+      theme_toggle_title: "切换主题（浅色/深色）", lang_title: "界面语言",
+      toast_need_build: "请先生成提示词",
+      toast_enhance_added: "“增强”指令已添加",
+      toast_copied: "已复制 ✅", toast_copy_empty: "空的——没有可复制的内容",
+      toast_copy_fail: "复制失败——请选中文本并按 Ctrl+C",
+      toast_nothing_undo: "没有可撤销的内容", toast_undo: "已撤销 ↶",
+      toast_cleared: "已清空", toast_clear_already: "字段已经是空的",
+      toast_undo_label: "撤销",
+      toast_history_empty: "历史记录为空", toast_history_cleared: "历史记录已清空",
+      toast_loaded: "已从历史记录载入 ✅",
+      prompt_context: "背景", prompt_task: "任务",
+      prompt_limits: "条件与限制", prompt_format: "回答格式",
+      enhance_note: "分析并改进该请求。请补充：\n- 深度\n- 备选方案\n- 风险\n\n"
+    },
+    pt: {
+      subtitle: "Assistente para criar prompts claros para a IA",
+      label_context: "Contexto", title_context: "O que está acontecendo? Descreva seu projeto.",
+      tooltip_context: "Exemplo: Estou desenvolvendo um centro de reabilitação...",
+      label_task: "Tarefa", title_task: "O que você precisa obter?",
+      tooltip_task: "Exemplo: Melhorar, reforçar o conceito...",
+      label_limits: "Condições e limites", title_limits: "Quais condições e limites?",
+      tooltip_limits: "Exemplo: orçamento, prazos, tecnologias...",
+      label_format: "Formato da resposta", title_format: "Como deve ser a resposta?",
+      tooltip_format: "Exemplo: lista + estrutura",
+      btn_build: "🚀 Criar prompt",
+      btn_undo: "↶ Desfazer", title_undo: "Restaurar o estado anterior (Ctrl+Z)",
+      btn_clear: "🧹 Limpar",
+      result_title: "Prompt final (editável)",
+      btn_enhance: "🧠 Melhorar", btn_copy: "📋 Copiar",
+      history_title: "🕘 Histórico de solicitações",
+      info_hint: "Os últimos 5 prompts são salvos. Quando um novo aparece, o mais antigo é removido automaticamente.",
+      btn_clear_history: "Limpar histórico",
+      log_empty: "Os prompts que você criar aparecerão aqui.", log_untitled: "Sem título",
+      title_copy: "Copiar", title_load: "Carregar no formulário", title_delete: "Excluir",
+      theme_toggle_title: "Alternar tema (claro/escuro)", lang_title: "Idioma da interface",
+      toast_need_build: "Primeiro crie o prompt",
+      toast_enhance_added: "A instrução “Melhorar” já foi adicionada",
+      toast_copied: "Copiado ✅", toast_copy_empty: "Vazio — nada para copiar",
+      toast_copy_fail: "Não foi possível — selecione o texto e pressione Ctrl+C",
+      toast_nothing_undo: "Nada para desfazer", toast_undo: "Desfeito ↶",
+      toast_cleared: "Limpo", toast_clear_already: "Os campos já estão vazios",
+      toast_undo_label: "Desfazer",
+      toast_history_empty: "O histórico está vazio", toast_history_cleared: "Histórico limpo",
+      toast_loaded: "Carregado do histórico ✅",
+      prompt_context: "Contexto", prompt_task: "Tarefa",
+      prompt_limits: "Condições e limites", prompt_format: "Formato da resposta",
+      enhance_note: "Analise e melhore a solicitação. Adicione:\n- profundidade\n- soluções alternativas\n- riscos\n\n"
+    }
+  };
+
+  // Текущий язык + помощник перевода
+  let currentLang = "en";
+
+  function t(key) {
+    return (I18N[currentLang] && I18N[currentLang][key]) || I18N.en[key] || key;
+  }
+
+  // Определить язык: сохранённый → системный → английский
+  function detectLang() {
+    const saved = localStorage.getItem("pb_lang");
+    if (saved && I18N[saved]) return saved;
+    const sys = (navigator.language || "en").slice(0, 2).toLowerCase();
+    return I18N[sys] ? sys : "en";
+  }
+
+  // Применить переводы ко всем помеченным элементам
+  function applyLang() {
+    document.documentElement.lang = currentLang;
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      el.textContent = t(el.getAttribute("data-i18n"));
+    });
+    document.querySelectorAll("[data-i18n-title]").forEach(el => {
+      el.title = t(el.getAttribute("data-i18n-title"));
+    });
+    const sel = document.getElementById("langSelect");
+    if (sel) sel.value = currentLang;
+    renderLog(); // перерисовать историю (даты и подписи зависят от языка)
+  }
+
+  // Сменить язык по выбору пользователя
+  function setLang(lang) {
+    currentLang = I18N[lang] ? lang : "en";
+    localStorage.setItem("pb_lang", currentLang);
+    applyLang();
+  }
 
   // --- История для «Шага назад» (хранит до 5 прошлых состояний) ---
   const HISTORY_LIMIT = 5;
@@ -484,7 +719,7 @@
   // Шаг назад: вернуть предыдущее состояние
   function undo() {
     if (!history.length) {
-      showToast("Нечего отменять");
+      showToast(t("toast_nothing_undo"));
       return;
     }
     const cur = snapshot();
@@ -492,7 +727,7 @@
     // если последнее сохранённое совпадает с текущим — берём ещё предыдущее
     if (sameState(prev, cur) && history.length) prev = history.pop();
     applyState(prev);
-    showToast("Шаг назад ↶");
+    showToast(t("toast_undo"));
   }
 
   // ===== Тема (светлая/тёмная) =====
@@ -564,10 +799,10 @@
     const format = document.getElementById("format").value;
 
     const prompt =
-      "Контекст:\n" + context +
-      "\n\nЗадача:\n" + task +
-      "\n\nУсловия и рамки:\n" + limits +
-      "\n\nФормат ответа:\n" + format;
+      t("prompt_context") + ":\n" + context +
+      "\n\n" + t("prompt_task") + ":\n" + task +
+      "\n\n" + t("prompt_limits") + ":\n" + limits +
+      "\n\n" + t("prompt_format") + ":\n" + format;
 
     const output = document.getElementById("output");
     output.value = prompt;
@@ -594,16 +829,17 @@
   // --- Усилить: дописывает инструкцию сверху (без повторов) ---
   function enhancePrompt() {
     const output = document.getElementById("output");
+    const note = t("enhance_note");
     if (!output.value.trim()) {
-      showToast("Сначала собери промпт");
+      showToast(t("toast_need_build"));
       return;
     }
-    if (output.value.startsWith(ENHANCE_NOTE)) {
-      showToast("Инструкция «Усилить» уже добавлена");
+    if (output.value.startsWith(note)) {
+      showToast(t("toast_enhance_added"));
       return;
     }
     recordHistory();
-    output.value = ENHANCE_NOTE + output.value;
+    output.value = note + output.value;
     autoGrow(output);
     saveAll();
   }
@@ -611,12 +847,12 @@
   // --- Копирование текста в буфер (общий помощник) ---
   async function copyToClipboard(text) {
     if (!text.trim()) {
-      showToast("Пусто — нечего копировать");
+      showToast(t("toast_copy_empty"));
       return;
     }
     try {
       await navigator.clipboard.writeText(text);
-      showToast("Скопировано ✅");
+      showToast(t("toast_copied"));
     } catch (e) {
       // Резервный способ (если основной заблокирован браузером)
       const tmp = document.createElement("textarea");
@@ -627,7 +863,7 @@
       tmp.select();
       const ok = document.execCommand("copy");
       document.body.removeChild(tmp);
-      showToast(ok ? "Скопировано ✅" : "Не удалось — выдели текст и нажми Ctrl+C");
+      showToast(ok ? t("toast_copied") : t("toast_copy_fail"));
     }
   }
 
@@ -641,7 +877,7 @@
     // Если и так пусто — ничего не делаем
     const hadText = FIELDS.some(id => document.getElementById(id).value.trim() !== "");
     if (!hadText) {
-      showToast("Поля уже пусты");
+      showToast(t("toast_clear_already"));
       return;
     }
 
@@ -654,7 +890,7 @@
     saveAll();
 
     // Мягкое уведомление с кнопкой «Отменить» (делает шаг назад)
-    showToast("Очищено", { label: "Отменить", callback: undo });
+    showToast(t("toast_cleared"), { label: t("toast_undo_label"), callback: undo });
   }
 
   // ===== История запросов =====
@@ -690,12 +926,12 @@
 
   function clearLog() {
     if (!loadLog().length) {
-      showToast("История пуста");
+      showToast(t("toast_history_empty"));
       return;
     }
     saveLog([]);
     renderLog();
-    showToast("История очищена");
+    showToast(t("toast_history_cleared"));
   }
 
   function copyFromLog(id) {
@@ -714,7 +950,7 @@
       autoGrow(el);
     });
     saveAll();
-    showToast("Загружено из истории ✅");
+    showToast(t("toast_loaded"));
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -730,11 +966,11 @@
       ? entry.fields.task.trim()
       : entry.prompt.trim();
     const oneLine = raw.replace(/\s+/g, " ");
-    return oneLine.length > 70 ? oneLine.slice(0, 70) + "…" : (oneLine || "Без названия");
+    return oneLine.length > 70 ? oneLine.slice(0, 70) + "…" : (oneLine || t("log_untitled"));
   }
 
   function formatTime(ms) {
-    return new Date(ms).toLocaleString("ru-RU", {
+    return new Date(ms).toLocaleString(currentLang, {
       day: "2-digit", month: "2-digit", year: "numeric",
       hour: "2-digit", minute: "2-digit"
     });
@@ -744,7 +980,7 @@
     const box = document.getElementById("logList");
     const list = loadLog();
     if (!list.length) {
-      box.innerHTML = '<p class="log-empty">Здесь будут появляться собранные промпты.</p>';
+      box.innerHTML = '<p class="log-empty">' + escapeHtml(t("log_empty")) + '</p>';
       return;
     }
     box.innerHTML = list.map(e => `
@@ -754,9 +990,9 @@
           <div class="log-time">${formatTime(e.time)}</div>
         </div>
         <div class="log-actions">
-          <button class="ghost" onclick="copyFromLog(${e.id})" title="Копировать">📋</button>
-          <button class="ghost" onclick="loadFromLog(${e.id})" title="Загрузить в форму">↩️</button>
-          <button class="ghost" onclick="deleteFromLog(${e.id})" title="Удалить">🗑</button>
+          <button class="ghost" onclick="copyFromLog(${e.id})" title="${escapeHtml(t("title_copy"))}">📋</button>
+          <button class="ghost" onclick="loadFromLog(${e.id})" title="${escapeHtml(t("title_load"))}">↩️</button>
+          <button class="ghost" onclick="deleteFromLog(${e.id})" title="${escapeHtml(t("title_delete"))}">🗑</button>
         </div>
       </div>
     `).join("");
@@ -815,8 +1051,9 @@
   loadAll();
   FIELDS.forEach(id => autoGrow(document.getElementById(id)));
 
-  // Показываем историю запросов
-  renderLog();
+  // Применяем язык (сохранённый или системный) — заодно переведёт интерфейс и отрисует историю
+  currentLang = detectLang();
+  applyLang();
 
   // Применяем сохранённую тему (или авто по системе)
   applyTheme(localStorage.getItem("pb_theme"));
