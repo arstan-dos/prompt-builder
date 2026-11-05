@@ -442,6 +442,9 @@
   .voice-status:empty { display: none; }
   .voice-help { margin: 0 0 16px; }
   .voice-status[data-error="true"] { color: var(--danger); }
+  .voice-status[data-processing="true"] { color: var(--text); font-size: 14px; }
+  .voice-progress { width: 100%; height: 10px; accent-color: var(--accent); }
+  .voice-controls { flex-wrap: wrap; }
   @media (max-width: 480px) { .voice-controls { align-items: flex-start; flex-direction: column; } }
 </style>
 
@@ -750,10 +753,11 @@
     "voice_microphone": "No microphone found. Connect one and try again.",
     "voice_no_speech": "No speech detected. Try again.",
     "voice_failed": "Could not start speech input. Try again.",
-    "voice_help": "Click Dictate, speak, then Stop. Text appears after processing. The first use downloads speech recognition; audio stays on your device.",
-    "voice_loading": "Preparing voice input for the first use…",
+    "voice_help": "Click Dictate, speak, then Stop. First use may take a few minutes to prepare; wait for your text. Later uses reuse downloaded files.",
+    "voice_loading": "Recording received. Preparing voice input for the first use; please wait for the text.",
     "voice_cancel": "Cancel",
-    "voice_load_failed": "Could not load voice input. Check your connection and click Dictate to retry."
+    "voice_load_failed": "Could not load voice input. Check your connection and click Dictate to retry.",
+    "voice_done": "Text added."
   },
   "ru": {
     "voice_dictate": "Надиктовать",
@@ -766,10 +770,11 @@
     "voice_microphone": "Микрофон не найден. Подключите его и повторите попытку.",
     "voice_no_speech": "Речь не обнаружена. Попробуйте ещё раз.",
     "voice_failed": "Не удалось начать голосовой ввод. Попробуйте ещё раз.",
-    "voice_help": "Нажмите «Надиктовать», говорите, затем «Остановить». Текст появится после обработки. При первом запуске загружается распознавание; запись остаётся на вашем устройстве.",
-    "voice_loading": "Первый запуск: подготавливаю голосовой ввод…",
+    "voice_help": "Нажмите «Надиктовать», говорите, затем «Остановить». При первом запуске подготовка может занять несколько минут — дождитесь текста. Загруженные файлы сохраняются для следующих запусков.",
+    "voice_loading": "Запись получена. Первый запуск: загружаю распознавание. Дождитесь текста.",
     "voice_cancel": "Отменить",
-    "voice_load_failed": "Не удалось загрузить голосовой ввод. Проверьте соединение и нажмите «Надиктовать» ещё раз."
+    "voice_load_failed": "Не удалось загрузить голосовой ввод. Проверьте соединение и нажмите «Надиктовать» ещё раз.",
+    "voice_done": "Текст добавлен."
   },
   "kk": {
     "voice_dictate": "Дауыспен енгізу",
@@ -782,10 +787,11 @@
     "voice_microphone": "Микрофон табылмады. Оны қосып, қайталап көріңіз.",
     "voice_no_speech": "Сөйлеу анықталмады. Қайталап көріңіз.",
     "voice_failed": "Дауыспен енгізу басталмады. Қайталап көріңіз.",
-    "voice_help": "«Дауыспен енгізу» түймесін басып, сөйлеңіз, содан кейін «Тоқтату» түймесін басыңыз. Мәтін өңдеуден кейін пайда болады. Алғашқы іске қосуда тану жүктеледі; жазба құрылғыңызда қалады.",
-    "voice_loading": "Алғашқы іске қосу: дауыспен енгізу дайындалуда…",
+    "voice_help": "«Дауыспен енгізу», содан кейін «Тоқтату» түймесін басыңыз. Алғашқы дайындық бірнеше минутқа созылуы мүмкін. Мәтінді күтіңіз.",
+    "voice_loading": "Жазба алынды. Алғашқы іске қосу: сөйлеуді тану жүктелуде. Мәтінді күтіңіз.",
     "voice_cancel": "Болдырмау",
-    "voice_load_failed": "Дауыспен енгізу жүктелмеді. Байланысты тексеріп, қайталап көріңіз."
+    "voice_load_failed": "Дауыспен енгізу жүктелмеді. Байланысты тексеріп, қайталап көріңіз.",
+    "voice_done": "Мәтін қосылды."
   },
   "es": {
     "voice_dictate": "Dictar",
@@ -798,10 +804,11 @@
     "voice_microphone": "No se encontró un micrófono. Conecta uno e inténtalo de nuevo.",
     "voice_no_speech": "No se detectó voz. Inténtalo de nuevo.",
     "voice_failed": "No se pudo iniciar el dictado. Inténtalo de nuevo.",
-    "voice_help": "Pulsa Dictar, habla y pulsa Detener. El texto aparece tras procesarlo. El primer uso descarga el reconocimiento; el audio permanece en tu dispositivo.",
-    "voice_loading": "Preparando el dictado por primera vez…",
+    "voice_help": "Pulsa Dictar, habla y pulsa Detener. La primera preparación puede tardar unos minutos; espera el texto. Los archivos se guardan para próximos usos.",
+    "voice_loading": "Grabación recibida. Preparando el dictado por primera vez; espera el texto.",
     "voice_cancel": "Cancelar",
-    "voice_load_failed": "No se pudo cargar el dictado. Revisa la conexión y vuelve a intentarlo."
+    "voice_load_failed": "No se pudo cargar el dictado. Revisa la conexión y vuelve a intentarlo.",
+    "voice_done": "Texto añadido."
   },
   "zh": {
     "voice_dictate": "语音输入",
@@ -814,10 +821,11 @@
     "voice_microphone": "未找到麦克风。请连接后重试。",
     "voice_no_speech": "未检测到语音。请重试。",
     "voice_failed": "无法启动语音输入。请重试。",
-    "voice_help": "点击语音输入，说话后点击停止。处理后会显示文字。首次使用需下载识别模型；录音保留在您的设备上。",
-    "voice_loading": "首次使用：正在准备语音输入…",
+    "voice_help": "点击语音输入，说话后点击停止。首次准备可能需要几分钟，请等待文字。已下载的文件将供后续使用。",
+    "voice_loading": "录音已收到。首次使用：正在准备语音识别，请等待文字。",
     "voice_cancel": "取消",
-    "voice_load_failed": "无法加载语音输入。请检查连接后重试。"
+    "voice_load_failed": "无法加载语音输入。请检查连接后重试。",
+    "voice_done": "文字已添加。"
   },
   "pt": {
     "voice_dictate": "Ditar",
@@ -830,10 +838,11 @@
     "voice_microphone": "Microfone não encontrado. Conecte um e tente novamente.",
     "voice_no_speech": "Nenhuma fala detectada. Tente novamente.",
     "voice_failed": "Não foi possível iniciar o ditado. Tente novamente.",
-    "voice_help": "Clique em Ditar, fale e clique em Parar. O texto aparece após o processamento. O primeiro uso baixa o reconhecimento; o áudio fica no seu dispositivo.",
-    "voice_loading": "Preparando o ditado pela primeira vez…",
+    "voice_help": "Clique em Ditar, fale e clique em Parar. A primeira preparação pode levar alguns minutos; aguarde o texto. Os arquivos ficam salvos para os próximos usos.",
+    "voice_loading": "Gravação recebida. Preparando o ditado pela primeira vez; aguarde o texto.",
     "voice_cancel": "Cancelar",
-    "voice_load_failed": "Não foi possível carregar o ditado. Verifique a conexão e tente novamente."
+    "voice_load_failed": "Não foi possível carregar o ditado. Verifique a conexão e tente novamente.",
+    "voice_done": "Texto adicionado."
   }
 };
   Object.keys(VOICE_I18N).forEach(lang => Object.assign(I18N[lang], VOICE_I18N[lang]));
@@ -866,6 +875,15 @@
     const status = document.getElementById('voice-status-' + id);
     status.textContent = text;
     status.dataset.error = String(error);
+    const processing = !error && voiceSession?.id === id && voiceSession.phase === 'processing';
+    status.dataset.processing = String(processing);
+    const progress = document.getElementById('voice-progress-' + id);
+    if (progress) {
+      progress.hidden = !processing;
+      progress.setAttribute('aria-label', text);
+      if (voiceEngine?.loaded) progress.removeAttribute('value');
+      else progress.value = voiceEngine?.progress || 0;
+    }
   }
 
   function resetVoiceEngine() {
@@ -881,7 +899,7 @@
   function getVoiceEngine() {
     if (voiceEngine) return voiceEngine;
     const worker = new Worker(new URL('voice-worker.js', document.baseURI), { type: 'module' });
-    const engine = { worker, pending: new Map(), loaded: false };
+    const engine = { worker, pending: new Map(), loaded: false, progress: 0 };
     engine.ready = new Promise((resolve, reject) => { engine.resolveReady = resolve; engine.rejectReady = reject; });
     // Loading starts while recording; failure is also handled if the user cancels first.
     engine.ready.catch(() => {});
@@ -897,11 +915,12 @@
       if (voiceEngine !== engine) return;
       if (data.type === 'ready') {
         engine.loaded = true;
+        if (voiceSession?.phase === 'processing') voiceStatus(voiceSession.id, t('voice_finishing'));
         engine.resolveReady();
       } else if (data.type === 'progress') {
+        engine.progress = Math.max(engine.progress, Math.min(99, Number(data.progress) || 0));
         if (voiceSession?.phase === 'processing' && !engine.loaded) {
-          const percent = Number.isFinite(data.progress) ? ' ' + Math.floor(data.progress) + '%' : '';
-          voiceStatus(voiceSession.id, t('voice_loading') + percent);
+          voiceStatus(voiceSession.id, t('voice_loading') + ' ' + engine.progress + '%');
         }
       } else if (data.type === 'result') {
         const request = engine.pending.get(data.id);
@@ -984,7 +1003,7 @@
       field.value += (field.value && !/\s$/.test(field.value) ? ' ' : '') + finalText;
       field.dispatchEvent(new Event('input', { bubbles: true }));
       voiceSession = null;
-      voiceStatus(session.id, '');
+      voiceStatus(session.id, t('voice_done'));
       refreshVoiceUI();
     } catch (error) {
       if (voiceSession === session) {
@@ -1060,12 +1079,23 @@
       status.setAttribute('role', 'status');
       status.setAttribute('aria-live', 'polite');
       status.setAttribute('aria-atomic', 'true');
-      controls.append(button, status);
+      const progress = document.createElement('progress');
+      progress.id = 'voice-progress-' + id;
+      progress.className = 'voice-progress';
+      progress.max = 100;
+      progress.value = 0;
+      progress.hidden = true;
+      controls.append(button, status, progress);
       const field = document.getElementById(id);
       (id === 'output' ? field.parentElement : field).after(controls);
       field.addEventListener('beforeinput', cancelVoice);
     });
-    document.addEventListener('visibilitychange', () => { if (document.hidden) cancelVoice(); });
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden || !voiceSession) return;
+      // Stop capturing when leaving the tab, but finish the already recorded speech.
+      if (voiceSession.phase === 'recording') toggleVoice(voiceSession.id);
+      else if (voiceSession.phase === 'starting') cancelVoice();
+    });
     window.addEventListener('pagehide', cancelVoice);
   }
 

@@ -26,6 +26,18 @@ const types={'.html':'text/html; charset=utf-8','.js':'text/javascript','.mjs':'
   page.on('console',m=>{if(m.type()==='warning'||m.type()==='error')console.log('BROWSER',m.text());});
   page.on('response',r=>{if(r.status()>=400) console.log('HTTP',r.status(),r.url());});
   page.on('request',r=>requests.push(r.url()));
+  await page.addInitScript(()=>{
+    window.voiceDownloadProgress=[];
+    const NativeWorker=window.Worker;
+    window.Worker=class extends NativeWorker {
+      constructor(...args){
+        super(...args);
+        this.addEventListener('message',({data})=>{
+          if(data.type==='progress')voiceDownloadProgress.push(data.progress);
+        });
+      }
+    };
+  });
   await page.goto('http://127.0.0.1:'+server.address().port);
   await page.evaluate(()=>setLang('ru'));
   console.log('Recording real Russian audio via fake microphone...');
@@ -42,10 +54,14 @@ const types={'.html':'text/html; charset=utf-8','.js':'text/javascript','.mjs':'
   assert.match(text,/Начало\./);
   assert.match(text.toLowerCase(),/сайт/);
   assert.match(text.toLowerCase(),/проект/);
-  assert.equal(status,'');
+  assert.equal(status,'Текст добавлен.');
   assert.equal(await page.evaluate(()=>localStorage.getItem('pb_context')),text);
   assert.equal(await page.locator('#voice-context').getAttribute('aria-pressed'),'false');
   assert.equal(await page.evaluate(()=>voiceEngine.loaded),true);
+  const progress=await page.evaluate(()=>voiceDownloadProgress);
+  assert.ok(progress.length>0,'Model download must report progress');
+  assert.ok(progress.every((value,index)=>value>=0&&value<=99&&(index===0||value>=progress[index-1])),'Overall download percentage must never go backwards');
+  assert.equal(await page.locator('#voice-progress-context').isVisible(),false);
   assert.equal(requests.some(url=>!url.startsWith('http://127.0.0.1:')),false,'Speech must not need third-party requests');
   await page.evaluate(()=>undo());
   assert.equal(await page.locator('#context').inputValue(),'Начало.');
@@ -62,6 +78,19 @@ const types={'.html':'text/html; charset=utf-8','.js':'text/javascript','.mjs':'
   await page.waitForFunction(()=>voiceSession?.id==='limits'&&voiceSession.phase==='recording');
   await page.evaluate(()=>setLang('en'));
   assert.equal(await page.evaluate(()=>voiceSession),null);
+  // A hidden tab stops capture but keeps the recorded speech for processing.
+  await page.locator('#voice-task').click();
+  await page.waitForFunction(()=>voiceSession?.phase==='recording');
+  await page.waitForTimeout(1500);
+  await page.evaluate(()=>{
+    Object.defineProperty(document,'hidden',{configurable:true,get:()=>true});
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  assert.equal(await page.evaluate(()=>voiceSession?.phase),'processing');
+  assert.equal(await page.locator('#voice-progress-task').isVisible(),true);
+  await page.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));
+  assert.equal(await page.evaluate(()=>voiceSession?.phase),'processing');
+  await page.evaluate(()=>{delete document.hidden;cancelVoice();});
   // A late permission grant must release the microphone after the form is cleared.
   await page.evaluate(()=>{
    window.originalGetUserMedia=navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
