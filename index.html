@@ -737,113 +737,128 @@
   };
 
 
-  // Browser speech recognition; only final results are committed to the fields.
+  // Local speech recognition; recorded audio is processed on-device.
   const VOICE_I18N = {
   "en": {
     "voice_dictate": "Dictate",
     "voice_stop": "Stop",
     "voice_connecting": "Connecting…",
-    "voice_listening": "Listening…",
-    "voice_finishing": "Finishing…",
-    "voice_unsupported": "Speech input is unavailable in this browser. Try Chrome or Safari over HTTPS.",
+    "voice_listening": "Listening… Click Stop when finished.",
+    "voice_finishing": "Transcribing…",
+    "voice_unsupported": "Voice input needs microphone access and a current browser over HTTPS.",
     "voice_permission": "Allow microphone access in your browser settings and try again.",
     "voice_microphone": "No microphone found. Connect one and try again.",
-    "voice_network": "Network error. Check your connection and try again.",
     "voice_no_speech": "No speech detected. Try again.",
     "voice_failed": "Could not start speech input. Try again.",
-    "voice_help": "Use the microphone beside a field to append text. Speech follows the interface language. Your browser may send audio to its speech service."
+    "voice_help": "Click Dictate, speak, then Stop. Text appears after processing. The first use downloads speech recognition; audio stays on your device.",
+    "voice_loading": "Preparing voice input for the first use…",
+    "voice_cancel": "Cancel",
+    "voice_load_failed": "Could not load voice input. Check your connection and click Dictate to retry."
   },
   "ru": {
     "voice_dictate": "Надиктовать",
     "voice_stop": "Остановить",
     "voice_connecting": "Подключение…",
-    "voice_listening": "Слушаю…",
-    "voice_finishing": "Завершение…",
-    "voice_unsupported": "Голосовой ввод недоступен в этом браузере. Попробуйте Chrome или Safari через HTTPS.",
+    "voice_listening": "Слушаю… Закончив, нажмите «Остановить».",
+    "voice_finishing": "Распознаю речь…",
+    "voice_unsupported": "Для голосового ввода нужен доступ к микрофону и современный браузер через HTTPS.",
     "voice_permission": "Разрешите доступ к микрофону в настройках браузера и повторите попытку.",
     "voice_microphone": "Микрофон не найден. Подключите его и повторите попытку.",
-    "voice_network": "Ошибка сети. Проверьте подключение и повторите попытку.",
     "voice_no_speech": "Речь не обнаружена. Попробуйте ещё раз.",
     "voice_failed": "Не удалось начать голосовой ввод. Попробуйте ещё раз.",
-    "voice_help": "Микрофон рядом с полем дописывает текст. Язык диктовки совпадает с языком интерфейса. Браузер может передавать аудио своему сервису распознавания."
+    "voice_help": "Нажмите «Надиктовать», говорите, затем «Остановить». Текст появится после обработки. При первом запуске загружается распознавание; запись остаётся на вашем устройстве.",
+    "voice_loading": "Первый запуск: подготавливаю голосовой ввод…",
+    "voice_cancel": "Отменить",
+    "voice_load_failed": "Не удалось загрузить голосовой ввод. Проверьте соединение и нажмите «Надиктовать» ещё раз."
   },
   "kk": {
     "voice_dictate": "Дауыспен енгізу",
     "voice_stop": "Тоқтату",
     "voice_connecting": "Қосылуда…",
-    "voice_listening": "Тыңдап тұрмын…",
-    "voice_finishing": "Аяқталуда…",
-    "voice_unsupported": "Бұл браузерде дауыспен енгізу қолжетімсіз. HTTPS арқылы Chrome немесе Safari қолданып көріңіз.",
+    "voice_listening": "Тыңдап тұрмын… Аяқтағанда «Тоқтату» түймесін басыңыз.",
+    "voice_finishing": "Сөйлеу танылуда…",
+    "voice_unsupported": "Микрофонға рұқсат және HTTPS арқылы заманауи браузер қажет.",
     "voice_permission": "Браузер баптауларында микрофонға рұқсат беріп, қайталап көріңіз.",
     "voice_microphone": "Микрофон табылмады. Оны қосып, қайталап көріңіз.",
-    "voice_network": "Желі қатесі. Байланысты тексеріп, қайталап көріңіз.",
     "voice_no_speech": "Сөйлеу анықталмады. Қайталап көріңіз.",
     "voice_failed": "Дауыспен енгізу басталмады. Қайталап көріңіз.",
-    "voice_help": "Өріс жанындағы микрофон мәтінді толықтырады. Диктовка тілі интерфейс тіліне сәйкес. Браузер аудионы тану қызметіне жіберуі мүмкін."
+    "voice_help": "«Дауыспен енгізу» түймесін басып, сөйлеңіз, содан кейін «Тоқтату» түймесін басыңыз. Мәтін өңдеуден кейін пайда болады. Алғашқы іске қосуда тану жүктеледі; жазба құрылғыңызда қалады.",
+    "voice_loading": "Алғашқы іске қосу: дауыспен енгізу дайындалуда…",
+    "voice_cancel": "Болдырмау",
+    "voice_load_failed": "Дауыспен енгізу жүктелмеді. Байланысты тексеріп, қайталап көріңіз."
   },
   "es": {
     "voice_dictate": "Dictar",
     "voice_stop": "Detener",
     "voice_connecting": "Conectando…",
-    "voice_listening": "Escuchando…",
-    "voice_finishing": "Finalizando…",
-    "voice_unsupported": "Entrada de voz no disponible. Prueba Chrome o Safari con HTTPS.",
+    "voice_listening": "Escuchando… Pulsa Detener al terminar.",
+    "voice_finishing": "Transcribiendo…",
+    "voice_unsupported": "El dictado requiere acceso al micrófono y un navegador actual con HTTPS.",
     "voice_permission": "Permite el acceso al micrófono en el navegador e inténtalo de nuevo.",
     "voice_microphone": "No se encontró un micrófono. Conecta uno e inténtalo de nuevo.",
-    "voice_network": "Error de red. Revisa la conexión e inténtalo de nuevo.",
     "voice_no_speech": "No se detectó voz. Inténtalo de nuevo.",
     "voice_failed": "No se pudo iniciar el dictado. Inténtalo de nuevo.",
-    "voice_help": "El micrófono junto al campo añade texto. El dictado usa el idioma de la interfaz. El navegador puede enviar audio a su servicio de reconocimiento."
+    "voice_help": "Pulsa Dictar, habla y pulsa Detener. El texto aparece tras procesarlo. El primer uso descarga el reconocimiento; el audio permanece en tu dispositivo.",
+    "voice_loading": "Preparando el dictado por primera vez…",
+    "voice_cancel": "Cancelar",
+    "voice_load_failed": "No se pudo cargar el dictado. Revisa la conexión y vuelve a intentarlo."
   },
   "zh": {
     "voice_dictate": "语音输入",
     "voice_stop": "停止",
     "voice_connecting": "正在连接…",
-    "voice_listening": "正在聆听…",
-    "voice_finishing": "正在完成…",
-    "voice_unsupported": "此浏览器不支持语音输入。请通过 HTTPS 使用 Chrome 或 Safari。",
+    "voice_listening": "正在聆听… 完成后请点击停止。",
+    "voice_finishing": "正在识别语音…",
+    "voice_unsupported": "语音输入需要麦克风权限和通过 HTTPS 访问的现代浏览器。",
     "voice_permission": "请在浏览器设置中允许使用麦克风，然后重试。",
     "voice_microphone": "未找到麦克风。请连接后重试。",
-    "voice_network": "网络错误。请检查连接后重试。",
     "voice_no_speech": "未检测到语音。请重试。",
     "voice_failed": "无法启动语音输入。请重试。",
-    "voice_help": "点击字段旁的麦克风追加文字。语音识别使用界面语言。浏览器可能将音频发送到其语音识别服务。"
+    "voice_help": "点击语音输入，说话后点击停止。处理后会显示文字。首次使用需下载识别模型；录音保留在您的设备上。",
+    "voice_loading": "首次使用：正在准备语音输入…",
+    "voice_cancel": "取消",
+    "voice_load_failed": "无法加载语音输入。请检查连接后重试。"
   },
   "pt": {
     "voice_dictate": "Ditar",
     "voice_stop": "Parar",
     "voice_connecting": "Conectando…",
-    "voice_listening": "Ouvindo…",
-    "voice_finishing": "Finalizando…",
-    "voice_unsupported": "Entrada de voz indisponível. Experimente Chrome ou Safari com HTTPS.",
+    "voice_listening": "Ouvindo… Clique em Parar ao terminar.",
+    "voice_finishing": "Transcrevendo…",
+    "voice_unsupported": "O ditado precisa de acesso ao microfone e de um navegador atual com HTTPS.",
     "voice_permission": "Permita o acesso ao microfone no navegador e tente novamente.",
     "voice_microphone": "Microfone não encontrado. Conecte um e tente novamente.",
-    "voice_network": "Erro de rede. Verifique a conexão e tente novamente.",
     "voice_no_speech": "Nenhuma fala detectada. Tente novamente.",
     "voice_failed": "Não foi possível iniciar o ditado. Tente novamente.",
-    "voice_help": "O microfone ao lado do campo acrescenta texto. O ditado usa o idioma da interface. O navegador pode enviar áudio ao serviço de reconhecimento."
+    "voice_help": "Clique em Ditar, fale e clique em Parar. O texto aparece após o processamento. O primeiro uso baixa o reconhecimento; o áudio fica no seu dispositivo.",
+    "voice_loading": "Preparando o ditado pela primeira vez…",
+    "voice_cancel": "Cancelar",
+    "voice_load_failed": "Não foi possível carregar o ditado. Verifique a conexão e tente novamente."
   }
 };
   Object.keys(VOICE_I18N).forEach(lang => Object.assign(I18N[lang], VOICE_I18N[lang]));
-  const SPEECH_LOCALES = { en: 'en-US', ru: 'ru-RU', kk: 'kk-KZ', es: 'es-ES', zh: 'zh-CN', pt: 'pt-BR' };
-  const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const SPEECH_LANGUAGES = { en: 'english', ru: 'russian', kk: 'kazakh', es: 'spanish', zh: 'chinese', pt: 'portuguese' };
+  const canRecordVoice = Boolean(window.isSecureContext && navigator.mediaDevices?.getUserMedia && window.MediaRecorder && window.Worker && window.AudioContext);
   let voiceSession = null;
+  let voiceEngine = null;
+  let voiceSequence = 0;
 
   function voiceLabel(id) {
     return t(id === 'output' ? 'result_title' : 'label_' + id);
   }
 
   function refreshVoiceUI() {
-    document.getElementById('voiceHelp').textContent = t(SpeechRecognitionAPI && window.isSecureContext ? 'voice_help' : 'voice_unsupported');
+    document.getElementById('voiceHelp').textContent = t(canRecordVoice ? 'voice_help' : 'voice_unsupported');
     FIELDS.forEach(id => {
       const button = document.getElementById('voice-' + id);
       if (!button) return;
-      const active = voiceSession && voiceSession.id === id;
-      const label = t(active ? 'voice_stop' : 'voice_dictate');
+      const active = voiceSession?.id === id;
+      const processing = active && voiceSession.phase === 'processing';
+      const label = t(active ? (processing ? 'voice_cancel' : 'voice_stop') : 'voice_dictate');
       button.querySelector('span').textContent = label;
       button.setAttribute('aria-label', label + ': ' + voiceLabel(id));
-      button.setAttribute('aria-pressed', String(Boolean(active)));
-      button.title = SpeechRecognitionAPI && window.isSecureContext ? label : t('voice_unsupported');
+      button.setAttribute('aria-pressed', String(active));
+      button.title = canRecordVoice ? label : t('voice_unsupported');
     });
   }
 
@@ -853,81 +868,180 @@
     status.dataset.error = String(error);
   }
 
-  // Invalidate callbacks before aborting so late results cannot overwrite a new state.
+  function resetVoiceEngine() {
+    if (!voiceEngine) return;
+    const engine = voiceEngine;
+    voiceEngine = null;
+    engine.worker.terminate();
+    engine.rejectReady(new Error('cancelled'));
+    engine.pending.forEach(request => request.reject(new Error('cancelled')));
+    engine.pending.clear();
+  }
+
+  function getVoiceEngine() {
+    if (voiceEngine) return voiceEngine;
+    const worker = new Worker(new URL('voice-worker.js', document.baseURI), { type: 'module' });
+    const engine = { worker, pending: new Map(), loaded: false };
+    engine.ready = new Promise((resolve, reject) => { engine.resolveReady = resolve; engine.rejectReady = reject; });
+    // Loading starts while recording; failure is also handled if the user cancels first.
+    engine.ready.catch(() => {});
+    voiceEngine = engine;
+    function fail(error) {
+      if (voiceEngine !== engine) return;
+      resetVoiceEngine();
+      if (voiceSession) failVoice(voiceSession, 'voice_load_failed');
+      console.warn('Speech model could not load:', error);
+    }
+    worker.onerror = fail;
+    worker.onmessage = ({ data }) => {
+      if (voiceEngine !== engine) return;
+      if (data.type === 'ready') {
+        engine.loaded = true;
+        engine.resolveReady();
+      } else if (data.type === 'progress') {
+        if (voiceSession?.phase === 'processing' && !engine.loaded) {
+          const percent = Number.isFinite(data.progress) ? ' ' + Math.floor(data.progress) + '%' : '';
+          voiceStatus(voiceSession.id, t('voice_loading') + percent);
+        }
+      } else if (data.type === 'result') {
+        const request = engine.pending.get(data.id);
+        engine.pending.delete(data.id);
+        request?.resolve(data.text);
+      } else if (data.type === 'error') {
+        const request = engine.pending.get(data.id);
+        if (request) {
+          engine.pending.delete(data.id);
+          request.reject(new Error(data.message));
+        } else { fail(data.message); }
+      }
+    };
+    worker.postMessage({ type: 'prepare' });
+    return engine;
+  }
+
+  function releaseVoiceRecording(session) {
+    clearTimeout(session.timer);
+    if (session.recorder && session.recorder.state !== 'inactive') session.recorder.stop();
+    session.stream?.getTracks().forEach(track => track.stop());
+  }
+
+  // Discard late permissions, recordings, and results after any form state change.
   function cancelVoice() {
     if (!voiceSession) return;
     const session = voiceSession;
     voiceSession = null;
-    session.recognition.abort();
+    releaseVoiceRecording(session);
+    if (session.phase === 'processing') resetVoiceEngine();
     voiceStatus(session.id, '');
     refreshVoiceUI();
   }
 
-  function toggleVoice(id) {
-    if (!SpeechRecognitionAPI || !window.isSecureContext) {
-      voiceStatus(id, t('voice_unsupported'), true);
-      return;
-    }
-    if (voiceSession && voiceSession.id === id) {
-      if (!voiceSession.stopping) {
-        voiceSession.stopping = true;
-        voiceStatus(id, t('voice_finishing'));
-        voiceSession.recognition.stop();
+  function failVoice(session, key) {
+    if (voiceSession !== session) return;
+    cancelVoice();
+    voiceStatus(session.id, t(key), true);
+  }
+
+  async function finishVoice(session) {
+    releaseVoiceRecording(session);
+    if (voiceSession !== session) return;
+    session.phase = 'processing';
+    refreshVoiceUI();
+    voiceStatus(session.id, t(session.engine.loaded ? 'voice_finishing' : 'voice_loading'));
+    let context;
+    try {
+      const blob = new Blob(session.chunks, { type: session.recorder.mimeType });
+      session.chunks = [];
+      context = new AudioContext({ sampleRate: 16000 });
+      const decoded = await context.decodeAudioData(await blob.arrayBuffer());
+      // decodeAudioData resamples to the context sample rate; combine stereo if needed.
+      const audio = new Float32Array(decoded.length);
+      for (let channel = 0; channel < decoded.numberOfChannels; channel++) {
+        const samples = decoded.getChannelData(channel);
+        for (let i = 0; i < audio.length; i++) audio[i] += samples[i] / decoded.numberOfChannels;
       }
+      await context.close();
+      context = null;
+      if (voiceSession !== session) return;
+      let energy = 0;
+      for (const sample of audio) energy += sample * sample;
+      if (audio.length < 4000 || Math.sqrt(energy / audio.length) < 0.002) {
+        failVoice(session, 'voice_no_speech');
+        return;
+      }
+      await session.engine.ready;
+      if (voiceSession !== session) return;
+      voiceStatus(session.id, t('voice_finishing'));
+      const text = await new Promise((resolve, reject) => {
+        session.engine.pending.set(session.sequence, { resolve, reject });
+        session.engine.worker.postMessage({ type: 'transcribe', id: session.sequence, audio, language: session.language }, [audio.buffer]);
+      });
+      if (voiceSession !== session) return;
+      const finalText = text.trim();
+      if (!finalText) { failVoice(session, 'voice_no_speech'); return; }
+      recordHistory();
+      const field = document.getElementById(session.id);
+      field.value += (field.value && !/\s$/.test(field.value) ? ' ' : '') + finalText;
+      field.dispatchEvent(new Event('input', { bubbles: true }));
+      voiceSession = null;
+      voiceStatus(session.id, '');
+      refreshVoiceUI();
+    } catch (error) {
+      if (voiceSession === session) {
+        failVoice(session, 'voice_failed');
+        console.warn('Speech processing failed:', error);
+      }
+    } finally {
+      if (context) await context.close().catch(() => {});
+    }
+  }
+
+  async function toggleVoice(id) {
+    if (!canRecordVoice) { voiceStatus(id, t('voice_unsupported'), true); return; }
+    if (voiceSession?.id === id) {
+      if (voiceSession.phase === 'recording') {
+        voiceSession.phase = 'processing';
+        releaseVoiceRecording(voiceSession);
+        voiceStatus(id, t('voice_finishing'));
+        refreshVoiceUI();
+      } else { cancelVoice(); }
       return;
     }
     cancelVoice();
-    const field = document.getElementById(id);
-    let recognition;
-    try { recognition = new SpeechRecognitionAPI(); }
-    catch (error) { voiceStatus(id, t('voice_failed'), true); return; }
-    const session = { id, recognition, stopping: false, recorded: false, nextResult: 0 };
+    const session = { id, sequence: ++voiceSequence, phase: 'starting', language: SPEECH_LANGUAGES[currentLang], chunks: [] };
     voiceSession = session;
-    recognition.lang = SPEECH_LOCALES[currentLang];
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.onstart = () => {
-      if (voiceSession === session && !session.stopping) voiceStatus(id, t('voice_listening'));
-    };
-    recognition.onresult = event => {
-      if (voiceSession !== session) return;
-      let interim = '';
-      for (let i = session.nextResult; i < event.results.length; i++) {
-        const result = event.results[i];
-        if (result.isFinal) {
-          const text = result[0].transcript.trim();
-          if (text) {
-            if (!session.recorded) { recordHistory(); session.recorded = true; }
-            field.value += (field.value && !/\s$/.test(field.value) ? ' ' : '') + text;
-            field.dispatchEvent(new Event('input', { bubbles: true }));
-          }
-          session.nextResult = i + 1;
-        } else { interim += result[0].transcript; }
-      }
-      voiceStatus(id, interim || t(session.stopping ? 'voice_finishing' : 'voice_listening'));
-    };
-    recognition.onerror = event => {
-      if (voiceSession !== session) return;
-      const key = { 'not-allowed': 'permission', 'service-not-allowed': 'permission', 'audio-capture': 'microphone', network: 'network', 'no-speech': 'no_speech', 'language-not-supported': 'failed' }[event.error] || 'failed';
-      voiceSession = null;
-      voiceStatus(id, t('voice_' + key), true);
-      recognition.abort();
-      refreshVoiceUI();
-    };
-    recognition.onend = () => {
-      if (voiceSession !== session) return;
-      voiceSession = null;
-      voiceStatus(id, '');
-      refreshVoiceUI();
-    };
     voiceStatus(id, t('voice_connecting'));
     refreshVoiceUI();
-    try { recognition.start(); }
-    catch (error) {
-      cancelVoice();
-      voiceStatus(id, t('voice_failed'), true);
+    try {
+      // Ask for the microphone from the click, without waiting for any model download.
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true }, video: false });
+      if (voiceSession !== session) { stream.getTracks().forEach(track => track.stop()); return; }
+      session.stream = stream;
+      const mimeType = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/webm'].find(type => MediaRecorder.isTypeSupported(type));
+      session.recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+      session.recorder.ondataavailable = event => { if (event.data.size) session.chunks.push(event.data); };
+      session.recorder.onstop = () => finishVoice(session);
+      session.recorder.onerror = () => failVoice(session, 'voice_failed');
+      session.engine = getVoiceEngine();
+      session.recorder.start(1000);
+      session.phase = 'recording';
+      voiceStatus(id, t('voice_listening'));
+      // Keep a single recording bounded; long recordings can be continued with another click.
+      session.timer = setTimeout(() => {
+        if (voiceSession === session && session.phase === 'recording') {
+          session.phase = 'processing';
+          releaseVoiceRecording(session);
+          voiceStatus(id, t('voice_finishing'));
+          refreshVoiceUI();
+        }
+      }, 120000);
+    } catch (error) {
+      const key = error.name === 'NotAllowedError' ? 'voice_permission'
+        : error.name === 'NotFoundError' || error.name === 'NotReadableError' ? 'voice_microphone' : 'voice_failed';
+      failVoice(session, key);
     }
   }
+
 
   function initVoice() {
     FIELDS.forEach(id => {

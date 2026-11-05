@@ -22,7 +22,7 @@ I built it to make my own everyday prompts dramatically sharper — and I genuin
 - 🌍 **6 languages** — English, Русский, Қазақша, Español, 中文, Português (interface *and* the generated prompt)
 - 🌙 **Light & dark theme** — auto-detects your system, remembers your choice
 - ↶ **Undo / Ctrl+Z** — never lose your work to an accidental click
-- 🔒 **Local text storage** — prompts stay in your browser. No account or app backend. Optional voice input uses your browser’s speech service, which may send audio to its provider.
+- 🔒 **Local text storage** — prompts stay in your browser. No account or app backend. Optional voice input runs locally on your device; audio is never uploaded.
 
 ---
 
@@ -40,7 +40,7 @@ No installation. No sign-up. Works on desktop and mobile.
 
 ## 🛠️ Tech
 
-A single, self-contained `index.html` — plain HTML, CSS, and JavaScript. No frameworks, no build step, no backend. Your data is stored locally with the browser’s `localStorage`. Hosted free on GitHub Pages.
+Plain HTML, CSS, and JavaScript in `index.html`, with a speech worker and self-hosted recognition assets. No frameworks, no build step, no backend. Your data is stored locally with the browser’s `localStorage`. Hosted free on GitHub Pages.
 
 ---
 
@@ -48,6 +48,20 @@ A single, self-contained `index.html` — plain HTML, CSS, and JavaScript. No fr
 
 ## Voice input
 
-Click **Dictate** beside a field, allow microphone access, and speak. Click **Stop** to finish. Final recognized phrases are appended without replacing existing text, saved locally, and can be undone. Choose the interface language before dictating. Only one field listens at a time; switching fields, editing, clearing, undoing, changing language, or hiding the page stops the previous session.
+Click **Dictate**, allow microphone access, speak, and click **Stop**. Text appears after processing and is appended to the selected field. It is saved locally and supports Undo. The interface language selects the recognition language. Each recording is limited to two minutes. You can cancel processing or switch fields without late results changing the form.
 
-Voice input requires HTTPS (or localhost), microphone permission, and a browser with Web Speech recognition (such as Chrome or Safari). Support and recognition languages depend on the browser and speech provider; an internet connection may be required. Unsupported browsers keep normal typing available and show an explanation. Audio may be processed by the browser’s speech provider; the app does not record or store audio.
+The first use downloads roughly 65 MB of recognition files from this same site. They are cached by the browser when available. Recording can start while the model loads. Audio is processed on your device and is never uploaded. No API key, speech service, account, or backend is needed. HTTPS (or localhost), microphone permission, MediaRecorder, Web Workers, and WebAssembly are required. Initial setup and processing speed depend on the connection and device. Short, clear phrases work best; review the transcript for recognition errors.
+
+### Speech dependencies
+
+- Transformers.js 3.8.1 (Apache-2.0), in `vendor/transformers/`.
+- ONNX Runtime Web bundled with Transformers.js (MIT).
+- Whisper tiny quantized ONNX weights from `Xenova/whisper-tiny`, revision `5332fcc35e32a33b86612b9a57a89be7906102b1` (MIT), in `models/whisper-tiny/`.
+
+All runtime and model requests use same-origin URLs. WASM uses one thread so GitHub Pages does not need cross-origin isolation headers. Third-party licenses and asset provenance are in `THIRD_PARTY_NOTICES.md` and beside the assets.
+
+### Voice regression check
+
+The optional developer test needs Node.js and Playwright (`npm install --no-save --package-lock=false playwright`, then `npx playwright install chromium`). Run `node tests/voice-input.cjs`. Set `VOICE_TEST_CHANNEL=msedge` to use an installed Edge instead of Playwright Chromium.
+
+The test passes a Russian WAV fixture through a fake microphone into the real MediaRecorder and local Whisper model, then checks the transcript, persistence, undo, cancellation, permission errors, failed model loading, retries, field switching, translations, mobile width, and absence of third-party network requests. The fixture was generated with Microsoft Irina TTS: “Мне нужно разработать красивый и удобный сайт для архитектурного проекта.” It contains no personal recording.
