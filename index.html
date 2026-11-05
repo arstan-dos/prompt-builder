@@ -433,6 +433,16 @@
   .toast-action:hover {
     background: rgba(255, 255, 255, 0.28);
   }
+
+  .voice-controls { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .voice-button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+  .voice-button svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .voice-button[aria-pressed="true"] { color: var(--danger); border-color: var(--danger); }
+  .voice-status, .voice-help { color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
+  .voice-status:empty { display: none; }
+  .voice-help { margin: 0 0 16px; }
+  .voice-status[data-error="true"] { color: var(--danger); }
+  @media (max-width: 480px) { .voice-controls { align-items: flex-start; flex-direction: column; } }
 </style>
 
 </head>
@@ -455,6 +465,8 @@
     <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" data-i18n-title="theme_toggle_title" title="Сменить тему (светлая/тёмная)">🌙</button>
   </div>
 </div>
+
+<p class="voice-help" id="voiceHelp"></p>
 
 <div class="field">
   <label for="context" data-i18n="label_context" data-i18n-title="title_context" title="Что происходит? Опиши проект.">Контекст</label>
@@ -724,6 +736,225 @@
     }
   };
 
+
+  // Browser speech recognition; only final results are committed to the fields.
+  const VOICE_I18N = {
+  "en": {
+    "voice_dictate": "Dictate",
+    "voice_stop": "Stop",
+    "voice_connecting": "Connecting…",
+    "voice_listening": "Listening…",
+    "voice_finishing": "Finishing…",
+    "voice_unsupported": "Speech input is unavailable in this browser. Try Chrome or Safari over HTTPS.",
+    "voice_permission": "Allow microphone access in your browser settings and try again.",
+    "voice_microphone": "No microphone found. Connect one and try again.",
+    "voice_network": "Network error. Check your connection and try again.",
+    "voice_no_speech": "No speech detected. Try again.",
+    "voice_failed": "Could not start speech input. Try again.",
+    "voice_help": "Use the microphone beside a field to append text. Speech follows the interface language. Your browser may send audio to its speech service."
+  },
+  "ru": {
+    "voice_dictate": "Надиктовать",
+    "voice_stop": "Остановить",
+    "voice_connecting": "Подключение…",
+    "voice_listening": "Слушаю…",
+    "voice_finishing": "Завершение…",
+    "voice_unsupported": "Голосовой ввод недоступен в этом браузере. Попробуйте Chrome или Safari через HTTPS.",
+    "voice_permission": "Разрешите доступ к микрофону в настройках браузера и повторите попытку.",
+    "voice_microphone": "Микрофон не найден. Подключите его и повторите попытку.",
+    "voice_network": "Ошибка сети. Проверьте подключение и повторите попытку.",
+    "voice_no_speech": "Речь не обнаружена. Попробуйте ещё раз.",
+    "voice_failed": "Не удалось начать голосовой ввод. Попробуйте ещё раз.",
+    "voice_help": "Микрофон рядом с полем дописывает текст. Язык диктовки совпадает с языком интерфейса. Браузер может передавать аудио своему сервису распознавания."
+  },
+  "kk": {
+    "voice_dictate": "Дауыспен енгізу",
+    "voice_stop": "Тоқтату",
+    "voice_connecting": "Қосылуда…",
+    "voice_listening": "Тыңдап тұрмын…",
+    "voice_finishing": "Аяқталуда…",
+    "voice_unsupported": "Бұл браузерде дауыспен енгізу қолжетімсіз. HTTPS арқылы Chrome немесе Safari қолданып көріңіз.",
+    "voice_permission": "Браузер баптауларында микрофонға рұқсат беріп, қайталап көріңіз.",
+    "voice_microphone": "Микрофон табылмады. Оны қосып, қайталап көріңіз.",
+    "voice_network": "Желі қатесі. Байланысты тексеріп, қайталап көріңіз.",
+    "voice_no_speech": "Сөйлеу анықталмады. Қайталап көріңіз.",
+    "voice_failed": "Дауыспен енгізу басталмады. Қайталап көріңіз.",
+    "voice_help": "Өріс жанындағы микрофон мәтінді толықтырады. Диктовка тілі интерфейс тіліне сәйкес. Браузер аудионы тану қызметіне жіберуі мүмкін."
+  },
+  "es": {
+    "voice_dictate": "Dictar",
+    "voice_stop": "Detener",
+    "voice_connecting": "Conectando…",
+    "voice_listening": "Escuchando…",
+    "voice_finishing": "Finalizando…",
+    "voice_unsupported": "Entrada de voz no disponible. Prueba Chrome o Safari con HTTPS.",
+    "voice_permission": "Permite el acceso al micrófono en el navegador e inténtalo de nuevo.",
+    "voice_microphone": "No se encontró un micrófono. Conecta uno e inténtalo de nuevo.",
+    "voice_network": "Error de red. Revisa la conexión e inténtalo de nuevo.",
+    "voice_no_speech": "No se detectó voz. Inténtalo de nuevo.",
+    "voice_failed": "No se pudo iniciar el dictado. Inténtalo de nuevo.",
+    "voice_help": "El micrófono junto al campo añade texto. El dictado usa el idioma de la interfaz. El navegador puede enviar audio a su servicio de reconocimiento."
+  },
+  "zh": {
+    "voice_dictate": "语音输入",
+    "voice_stop": "停止",
+    "voice_connecting": "正在连接…",
+    "voice_listening": "正在聆听…",
+    "voice_finishing": "正在完成…",
+    "voice_unsupported": "此浏览器不支持语音输入。请通过 HTTPS 使用 Chrome 或 Safari。",
+    "voice_permission": "请在浏览器设置中允许使用麦克风，然后重试。",
+    "voice_microphone": "未找到麦克风。请连接后重试。",
+    "voice_network": "网络错误。请检查连接后重试。",
+    "voice_no_speech": "未检测到语音。请重试。",
+    "voice_failed": "无法启动语音输入。请重试。",
+    "voice_help": "点击字段旁的麦克风追加文字。语音识别使用界面语言。浏览器可能将音频发送到其语音识别服务。"
+  },
+  "pt": {
+    "voice_dictate": "Ditar",
+    "voice_stop": "Parar",
+    "voice_connecting": "Conectando…",
+    "voice_listening": "Ouvindo…",
+    "voice_finishing": "Finalizando…",
+    "voice_unsupported": "Entrada de voz indisponível. Experimente Chrome ou Safari com HTTPS.",
+    "voice_permission": "Permita o acesso ao microfone no navegador e tente novamente.",
+    "voice_microphone": "Microfone não encontrado. Conecte um e tente novamente.",
+    "voice_network": "Erro de rede. Verifique a conexão e tente novamente.",
+    "voice_no_speech": "Nenhuma fala detectada. Tente novamente.",
+    "voice_failed": "Não foi possível iniciar o ditado. Tente novamente.",
+    "voice_help": "O microfone ao lado do campo acrescenta texto. O ditado usa o idioma da interface. O navegador pode enviar áudio ao serviço de reconhecimento."
+  }
+};
+  Object.keys(VOICE_I18N).forEach(lang => Object.assign(I18N[lang], VOICE_I18N[lang]));
+  const SPEECH_LOCALES = { en: 'en-US', ru: 'ru-RU', kk: 'kk-KZ', es: 'es-ES', zh: 'zh-CN', pt: 'pt-BR' };
+  const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let voiceSession = null;
+
+  function voiceLabel(id) {
+    return t(id === 'output' ? 'result_title' : 'label_' + id);
+  }
+
+  function refreshVoiceUI() {
+    document.getElementById('voiceHelp').textContent = t(SpeechRecognitionAPI && window.isSecureContext ? 'voice_help' : 'voice_unsupported');
+    FIELDS.forEach(id => {
+      const button = document.getElementById('voice-' + id);
+      if (!button) return;
+      const active = voiceSession && voiceSession.id === id;
+      const label = t(active ? 'voice_stop' : 'voice_dictate');
+      button.querySelector('span').textContent = label;
+      button.setAttribute('aria-label', label + ': ' + voiceLabel(id));
+      button.setAttribute('aria-pressed', String(Boolean(active)));
+      button.title = SpeechRecognitionAPI && window.isSecureContext ? label : t('voice_unsupported');
+    });
+  }
+
+  function voiceStatus(id, text, error = false) {
+    const status = document.getElementById('voice-status-' + id);
+    status.textContent = text;
+    status.dataset.error = String(error);
+  }
+
+  // Invalidate callbacks before aborting so late results cannot overwrite a new state.
+  function cancelVoice() {
+    if (!voiceSession) return;
+    const session = voiceSession;
+    voiceSession = null;
+    session.recognition.abort();
+    voiceStatus(session.id, '');
+    refreshVoiceUI();
+  }
+
+  function toggleVoice(id) {
+    if (!SpeechRecognitionAPI || !window.isSecureContext) {
+      voiceStatus(id, t('voice_unsupported'), true);
+      return;
+    }
+    if (voiceSession && voiceSession.id === id) {
+      if (!voiceSession.stopping) {
+        voiceSession.stopping = true;
+        voiceStatus(id, t('voice_finishing'));
+        voiceSession.recognition.stop();
+      }
+      return;
+    }
+    cancelVoice();
+    const field = document.getElementById(id);
+    let recognition;
+    try { recognition = new SpeechRecognitionAPI(); }
+    catch (error) { voiceStatus(id, t('voice_failed'), true); return; }
+    const session = { id, recognition, stopping: false, recorded: false, nextResult: 0 };
+    voiceSession = session;
+    recognition.lang = SPEECH_LOCALES[currentLang];
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.onstart = () => {
+      if (voiceSession === session && !session.stopping) voiceStatus(id, t('voice_listening'));
+    };
+    recognition.onresult = event => {
+      if (voiceSession !== session) return;
+      let interim = '';
+      for (let i = session.nextResult; i < event.results.length; i++) {
+        const result = event.results[i];
+        if (result.isFinal) {
+          const text = result[0].transcript.trim();
+          if (text) {
+            if (!session.recorded) { recordHistory(); session.recorded = true; }
+            field.value += (field.value && !/\s$/.test(field.value) ? ' ' : '') + text;
+            field.dispatchEvent(new Event('input', { bubbles: true }));
+          }
+          session.nextResult = i + 1;
+        } else { interim += result[0].transcript; }
+      }
+      voiceStatus(id, interim || t(session.stopping ? 'voice_finishing' : 'voice_listening'));
+    };
+    recognition.onerror = event => {
+      if (voiceSession !== session) return;
+      const key = { 'not-allowed': 'permission', 'service-not-allowed': 'permission', 'audio-capture': 'microphone', network: 'network', 'no-speech': 'no_speech', 'language-not-supported': 'failed' }[event.error] || 'failed';
+      voiceSession = null;
+      voiceStatus(id, t('voice_' + key), true);
+      recognition.abort();
+      refreshVoiceUI();
+    };
+    recognition.onend = () => {
+      if (voiceSession !== session) return;
+      voiceSession = null;
+      voiceStatus(id, '');
+      refreshVoiceUI();
+    };
+    voiceStatus(id, t('voice_connecting'));
+    refreshVoiceUI();
+    try { recognition.start(); }
+    catch (error) {
+      cancelVoice();
+      voiceStatus(id, t('voice_failed'), true);
+    }
+  }
+
+  function initVoice() {
+    FIELDS.forEach(id => {
+      const controls = document.createElement('div');
+      controls.className = 'voice-controls';
+      const button = document.createElement('button');
+      button.id = 'voice-' + id;
+      button.type = 'button';
+      button.className = 'voice-button';
+      button.setAttribute('aria-controls', id);
+      button.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/></svg><span></span>';
+      button.addEventListener('click', () => toggleVoice(id));
+      const status = document.createElement('span');
+      status.id = 'voice-status-' + id;
+      status.className = 'voice-status';
+      status.setAttribute('role', 'status');
+      status.setAttribute('aria-live', 'polite');
+      status.setAttribute('aria-atomic', 'true');
+      controls.append(button, status);
+      const field = document.getElementById(id);
+      (id === 'output' ? field.parentElement : field).after(controls);
+      field.addEventListener('beforeinput', cancelVoice);
+    });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) cancelVoice(); });
+    window.addEventListener('pagehide', cancelVoice);
+  }
+
   // Текущий язык + помощник перевода
   let currentLang = "en";
 
@@ -750,11 +981,13 @@
     });
     const sel = document.getElementById("langSelect");
     if (sel) sel.value = currentLang;
+    refreshVoiceUI();
     renderLog(); // перерисовать историю (даты и подписи зависят от языка)
   }
 
   // Сменить язык по выбору пользователя
   function setLang(lang) {
+    cancelVoice();
     currentLang = I18N[lang] ? lang : "en";
     localStorage.setItem("pb_lang", currentLang);
     applyLang();
@@ -790,6 +1023,7 @@
 
   // Применить состояние к полям
   function applyState(s) {
+    cancelVoice();
     FIELDS.forEach(id => {
       const el = document.getElementById(id);
       el.value = s[id];
@@ -800,6 +1034,7 @@
 
   // Шаг назад: вернуть предыдущее состояние
   function undo() {
+    cancelVoice();
     if (!history.length) {
       showToast(t("toast_nothing_undo"));
       return;
@@ -875,6 +1110,7 @@
 
   // --- Сборка промпта ---
   function generatePrompt() {
+    cancelVoice();
     recordHistory();
     const context = document.getElementById("context").value;
     const task = document.getElementById("task").value;
@@ -912,6 +1148,7 @@
 
   // --- Усилить: дописывает инструкцию сверху (без повторов) ---
   function enhancePrompt() {
+    cancelVoice();
     const output = document.getElementById("output");
     const note = t("enhance_note");
     if (!output.value.trim()) {
@@ -958,6 +1195,7 @@
 
   // --- Очистить все поля (сразу, с возможностью отменить) ---
   function clearAll() {
+    cancelVoice();
     // Если и так пусто — ничего не делаем
     const hadText = FIELDS.some(id => document.getElementById(id).value.trim() !== "");
     if (!hadText) {
@@ -1025,6 +1263,7 @@
 
   // Загрузить запись обратно в форму
   function loadFromLog(id) {
+    cancelVoice();
     const entry = loadLog().find(e => e.id === id);
     if (!entry) return;
     recordHistory(); // чтобы загрузку можно было отменить «Шагом назад»
@@ -1155,6 +1394,7 @@
   });
 
   // Загружаем сохранённое при открытии и сразу подгоняем высоту всех полей
+  initVoice();
   loadAll();
   FIELDS.forEach(id => autoGrow(document.getElementById(id)));
 

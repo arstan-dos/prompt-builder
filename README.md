@@ -15,13 +15,14 @@ I built it to make my own everyday prompts dramatically sharper — and I genuin
 ## ✨ Features
 
 - 🧩 **Structured builder** — four guided fields turn a fuzzy idea into a precise prompt
+- 🎙️ **Voice input** — dictate into any of the four fields or the final prompt, using the interface language
 - 🧠 **Enhance** — one click adds depth, alternatives, and risk-checks to your request
 - 📋 **One-click copy** — clean text, ready to paste anywhere
 - 🕘 **History** — your last 5 prompts are saved and reusable
 - 🌍 **6 languages** — English, Русский, Қазақша, Español, 中文, Português (interface *and* the generated prompt)
 - 🌙 **Light & dark theme** — auto-detects your system, remembers your choice
 - ↶ **Undo / Ctrl+Z** — never lose your work to an accidental click
-- 🔒 **Private by design** — everything stays in your browser. No account, no server, no tracking.
+- 🔒 **Local text storage** — prompts stay in your browser. No account or app backend. Optional voice input uses your browser’s speech service, which may send audio to its provider.
 
 ---
 
@@ -44,3 +45,9 @@ A single, self-contained `index.html` — plain HTML, CSS, and JavaScript. No fr
 ---
 
 ⭐ If it helps you, give the repo a star — it helps others find it too!
+
+## Voice input
+
+Click **Dictate** beside a field, allow microphone access, and speak. Click **Stop** to finish. Final recognized phrases are appended without replacing existing text, saved locally, and can be undone. Choose the interface language before dictating. Only one field listens at a time; switching fields, editing, clearing, undoing, changing language, or hiding the page stops the previous session.
+
+Voice input requires HTTPS (or localhost), microphone permission, and a browser with Web Speech recognition (such as Chrome or Safari). Support and recognition languages depend on the browser and speech provider; an internet connection may be required. Unsupported browsers keep normal typing available and show an explanation. Audio may be processed by the browser’s speech provider; the app does not record or store audio.
